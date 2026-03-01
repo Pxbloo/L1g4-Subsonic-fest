@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';   // Cuando tengamos backend podemos detectar la pagina en la que estamos
 import SubsonicLogo from "@/assets/logo/Subsonic.webp";
+import AppLink from './AppLink';
 
 const Footer = () => {
 
@@ -24,9 +25,9 @@ const Footer = () => {
               Inicio
             </h4>
             <ul className="space-y-4 text-sm font-extralight text-subsonic-text">
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Experiencias</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Paquetes</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Entradas</a></li>
+              <li><AppLink href="/experiencias">Experiencias</AppLink></li>
+              <li><AppLink href="/paquetes">Paquetes</AppLink></li>
+              <li><AppLink href="/entradas">Entradas</AppLink></li>
             </ul>
           </div>
 
@@ -35,9 +36,9 @@ const Footer = () => {
               Tienda
             </h4>
             <ul className="space-y-4 text-sm font-extralight text-subsonic-text">
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Ropa</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Accesorios</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Otros</a></li>
+              <li><AppLink href="/ropa">Ropa</AppLink></li>
+              <li><AppLink href="/accesorios">Accesorios</AppLink></li>
+              <li><AppLink href="/otros">Otros</AppLink></li>
             </ul>
           </div>
 
@@ -46,8 +47,8 @@ const Footer = () => {
               Blog
             </h4>
             <ul className="space-y-4 text-sm font-extralight text-subsonic-text">
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Noticias y <br />novedades</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Articulos de <br/>artistas</a></li>
+              <li><AppLink href="/noticias">Noticias y <br />novedades</AppLink></li>
+              <li><AppLink href="/artistas">Articulos de <br/>artistas</AppLink ></li>
             </ul>
           </div>
 
@@ -56,18 +57,18 @@ const Footer = () => {
               Contacto
             </h4>
             <ul className="space-y-4 text-sm font-extralight text-subsonic-text">
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Soporte</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Trabaja con <br/>nosotros</a></li>
+              <li><AppLink href="/faq">FAQ</AppLink></li>
+              <li><AppLink href="/soporte">Soporte</AppLink></li>
+              <li><AppLink href="/trabaja-con-nosotros">Trabaja con <br/>nosotros</AppLink></li>
             </ul>
           </div>
         <div>
             <ul className="space-y-4 text-sm font-thin text-subsonic-text">
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">X (Twitter)</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">Instagram</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">YouTube</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">LinkedIn</a></li>
-              <li><a href="#" className="hover:text-subsonic-accent transition-colors">SoundCloud</a></li>
+              <li><a href="#" className="transition-colors hover:text-[#E1306C]">Instagram</a></li>
+              <li><a href="#" className="transition-colors hover:text-[#1DA1F2]">X (Twitter)</a></li>
+              <li><a href="#" className="transition-colors hover:text-[#FF0000]">YouTube</a></li>
+              <li><a href="#" className="transition-colors hover:text-[#0A66C2]">LinkedIn</a></li>
+              <li><a href="#" className="transition-colors hover:text-[#FF5500]">SoundCloud</a></li>
             </ul>
           </div>
 
