@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* Esto importa tu configuración del archivo tailwind.config.js */
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-subsonic-bg text-subsonic-text font-inter;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-montserrat font-black uppercase tracking-tighter;
+  }
+}
