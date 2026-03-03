@@ -1,13 +1,17 @@
 import React, {useId, useMemo} from "react";
 
-const AvatarPicker = ({ value, onChange, size = 64}) => {
+const AvatarPicker = ({ value, onChange, size = 64, disabled = false}) => {
 
     const inputId = useId();
+
     const fallback = useMemo(() => {
         return "bg-subsonic-accent";
         }, []);
 
     const handleFile = (file) => {
+        if (!file || disabled) return;
+        if (!file.type.startsWith("image/")) return;
+
         console.log("File: ", file);
         const url = "#"
         onChange?.(url);
@@ -25,9 +29,19 @@ const AvatarPicker = ({ value, onChange, size = 64}) => {
                     <div className={`w-full h-full ${fallback}`} />
                 )}
             </div>
-            <input type="file" id={inputId} accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
-            <label htmlFor={inputId} className="text-subsonic-text font-bold uppercase text-sm hover:text-subsonic-btn transition">Cambiar Avatar</label>
-
+            <input
+                type="file"
+                id={inputId}
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFile(e.target.files?.[0])}
+                disabled={disabled}
+            />
+            <label
+                htmlFor={inputId}
+                className="text-subsonic-text font-bold uppercase text-sm hover:text-subsonic-btn transition">
+                Cambiar Avatar
+            </label>
         </div>
     );
 }

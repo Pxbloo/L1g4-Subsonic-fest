@@ -1,15 +1,22 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import AvatarPicker from '../components/AvatarPicker';
 import ProfileForm from "@/components/ProfileForm.jsx";
 import RecentPurchases from "@/components/RecentPurchases.jsx";
 
 const UserProfile = () => {
 
+    const [isEditing, setIsEditing] = useState(false);
+
     const [profile, setProfile] = React.useState({
         name: "Usuario",
         phone: "",
         avatar: "",
-        address: "",
+        address: {
+            country: "",
+            city: "",
+            street: "",
+            postalCode: "",
+        },
     });
 
     const purchases = useMemo(
@@ -45,6 +52,7 @@ const UserProfile = () => {
 
     const handleProfileSave = (nextProfile) => {
         setProfile((prev) => ({ ...prev, ...nextProfile }));
+        setIsEditing(false);
         // Later: llamada de API.
     };
 
@@ -56,10 +64,14 @@ const UserProfile = () => {
         });
     };
 
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+    };
+
     return (
         <section className="max-w-6xl mx-auto">
             <header className="mb-6">
-                <h1 className="text-3xl md:text-4xl font-black text-subsonic-text uppercase tracking-tight">
+                <h1 className="text-3xl md:text-4xl font-black text-subsonic-accent uppercase tracking-tight">
                     Perfil de usuario
                 </h1>
                 <p className="text-subsonic-text/80 mt-2">
@@ -76,6 +88,7 @@ const UserProfile = () => {
                                 value={profile.avatarUrl}
                                 onChange={handleAvatarChange}
                                 size={72}
+                                disabled={!isEditing}
                             />
 
                             <div className="flex-1">
@@ -90,6 +103,9 @@ const UserProfile = () => {
 
                                 <ProfileForm
                                     value={profile}
+                                    isEditing={isEditing}
+                                    onEdit={() => setIsEditing(true)}
+                                    onCancel={handleCancelEdit}
                                     onSave={handleProfileSave}
                                     onChangePassword={handlePasswordChange}
                                 />
@@ -106,9 +122,7 @@ const UserProfile = () => {
                 </aside>
             </div>
 
-            {/* If you want purchases on the LEFT instead:
-          - swap the two blocks above, or
-          - use Tailwind order classes (e.g., lg:order-2 / lg:order-1). */}
+            {/* Right: Recent purchases */}
         </section>
     );
 };
