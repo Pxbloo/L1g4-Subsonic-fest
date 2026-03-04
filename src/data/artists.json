@@ -1,0 +1,22 @@
+{
+  "artists": [
+    {
+      "id": 301,
+      "name": "David Guetta",
+      "genres": ["Electrónica", "House", "Dance"],
+      "description": "DJ y productor francés, pionero del EDM, con múltiples premios Grammy."
+    },
+    {
+      "id": 302,
+      "name": "Arctic Monkeys",
+      "genres": ["Rock alternativo", "Indie rock"],
+      "description": "Banda británica formada en Sheffield, conocida por su estilo fresco y letras ingeniosas."
+    },
+    {
+      "id": 303,
+      "name": "Norah Jones",
+      "genres": ["Jazz", "Pop", "Soul"],
+      "description": "Cantante y pianista estadounidense, ganadora de 9 premios Grammy, con una voz suave y emotiva."
+    }
+  ]
+}
