@@ -1,70 +1,44 @@
-{
-  "festivals": [
-    {
-      "id": 101,
-      "name": "ElectroBeach Festival",
-      "date": "2025-07-15",
-      "duration": "3 días",
-      "description": "El mayor festival de música electrónica en la costa, con escenarios frente al mar.",
-      "cartel": "https://placekitten.com/800/400?image=1",
-      "location": "Playa de Levante, Benidorm",
-      "price": 120.5,
-      "artists": ["David Guetta", "Martin Garrix", "Armin van Buuren"]
-    },
-    {
-      "id": 102,
-      "name": "Rock City Fest",
-      "date": "2025-09-10",
-      "duration": "2 días",
-      "description": "Dos jornadas de rock alternativo con bandas nacionales e internacionales.",
-      "cartel": "https://placekitten.com/800/400?image=2",
-      "location": "Recinto Ferial, Zaragoza",
-      "price": 65.0,
-      "artists": ["Arctic Monkeys", "The Killers", "Foo Fighters"]
-    },
-    {
-      "id": 103,
-      "name": "Jazz & Blues Night",
-      "date": "2025-11-05",
-      "duration": "1 día",
-      "description": "Noche de jazz y blues en un entorno íntimo con artistas de renombre.",
-      "cartel": "https://placekitten.com/800/400?image=3",
-      "location": "Teatro Principal, Alicante",
-      "price": 45.0,
-      "artists": ["Norah Jones", "B.B. King Tribute", "Diana Krall"]
-    },
-    {
-      "id": 104,
-      "name": "Indie Summer Fest",
-      "date": "2025-06-22",
-      "duration": "2 días",
-      "description": "Festival de indie pop con bandas emergentes y consagradas.",
-      "cartel": "https://placekitten.com/800/400?image=4",
-      "location": "Parque del Oeste, Madrid",
-      "price": 55.0,
-      "artists": ["Vetusta Morla", "Lori Meyers", "Love of Lesbian"]
-    },
-    {
-      "id": 105,
-      "name": "Reggae Sesh",
-      "date": "2025-08-18",
-      "duration": "1 día",
-      "description": "Música reggae, dub y sound system en un ambiente relajado.",
-      "cartel": "https://placekitten.com/800/400?image=5",
-      "location": "Pavelló de la Vall d'Hebron, Barcelona",
-      "price": 38.0,
-      "artists": ["Morodo", "Green Valley", "Iseo & Dodosound"]
-    },
-    {
-      "id": 106,
-      "name": "Metal Gods Fest",
-      "date": "2025-10-30",
-      "duration": "2 días",
-      "description": "El festival de metal más heavy del país, con bandas míticas.",
-      "cartel": "https://placekitten.com/800/400?image=6",
-      "location": "Bilbao Exhibition Centre, Barakaldo",
-      "price": 85.0,
-      "artists": ["Metallica", "Iron Maiden", "Slipknot"]
-    }
-  ]
-}
+[
+  { 
+    "id": 1, 
+    "title": "Summer Subsonic", 
+    "date": "15-17 Jul 2025", 
+    "price": "89€", 
+    "description": "El evento principal del verano con los mejores DJs internacionales." 
+  },
+  { 
+    "id": 2, 
+    "title": "Electronic Night", 
+    "date": "22 Ago 2025", 
+    "price": "45€", 
+    "description": "Una noche dedicada al techno más puro en un entorno industrial." 
+  },
+  { 
+    "id": 3, 
+    "title": "Techno Experience", 
+    "date": "05 Sep 2025", 
+    "price": "60€", 
+    "description": "Experiencia inmersiva con visuales de última generación." 
+  },
+  { 
+    "id": 4, 
+    "title": "Bass Festival", 
+    "date": "12 Oct 2025", 
+    "price": "75€", 
+    "description": "Siente las frecuencias más bajas en el festival de Bass definitivo." 
+  },
+  { 
+    "id": 5, 
+    "title": "Neon Party", 
+    "date": "30 Oct 2025", 
+    "price": "40€", 
+    "description": "Luces, colores y el mejor house para cerrar el mes." 
+  },
+  { 
+    "id": 6, 
+    "title": "Winter Subsonic", 
+    "date": "20 Dic 2025", 
+    "price": "95€", 
+    "description": "Despide el año con el festival indoor más grande de la región." 
+  }
+]
