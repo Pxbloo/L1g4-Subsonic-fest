@@ -80,7 +80,6 @@ const UserProfile = () => {
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Left: user data */}
                 <div className="lg:col-span-8">
                     <div className="bg-subsonic-navfooter border border-subsonic-border rounded-2xl p-6">
                         <div className="flex items-start gap-5">
@@ -105,7 +104,7 @@ const UserProfile = () => {
                                     value={profile}
                                     isEditing={isEditing}
                                     onEdit={() => setIsEditing(true)}
-                                    onCancel={handleCancelEdit}
+                                    onCancelEdit={handleCancelEdit}
                                     onSave={handleProfileSave}
                                     onChangePassword={handlePasswordChange}
                                 />
@@ -114,15 +113,12 @@ const UserProfile = () => {
                     </div>
                 </div>
 
-                {/* Right: recent purchases */}
                 <aside className="lg:col-span-4">
                     <div className="bg-subsonic-navfooter border border-subsonic-border rounded-2xl p-6">
                         <RecentPurchases purchases={purchases} />
                     </div>
                 </aside>
             </div>
-
-            {/* Right: Recent purchases */}
         </section>
     );
 };
