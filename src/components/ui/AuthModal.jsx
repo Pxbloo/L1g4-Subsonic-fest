@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import userData from "@/data/users.json";
 
-const AuthModal = ({ isOpen, initialType, onClose }) => {
+const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
   const [activeTab, setActiveTab] = useState(initialType);
   const [userType, setUserType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveTab(initialType);
     setErrorMessage('');
     if (initialType === 'login') {
@@ -28,8 +32,40 @@ const AuthModal = ({ isOpen, initialType, onClose }) => {
 
     event.preventDefault();
     setErrorMessage('');
-    // Aquí en futuras entregas iría la lógica real de login/registro
+
+    if (activeTab === 'login') {
+      try {
+        console.log("Attempting login with:", { loginEmail, loginPassword });
+        // Posteriormente habrá que modificarlo para hacer fetch a la base de datos
+        const user = userData.users.find(
+            u => u.email === loginEmail || u.phone === loginEmail
+        );
+
+        if (user && user.password === loginPassword) {
+          console.log("Login successful:", user);
+          onLoginSuccess(user); // Cuando se pase a fetch -> modificar para no enviar contraseña de usuario al estado global
+          onClose();
+        }
+        else {
+          console.log("Login failed");
+          setErrorMessage("Credenciales incorrectas.");
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setErrorMessage("Error al tomar usuarios de la base de datos.");
+      }
+    }
+    else {
+      handleRegister();
+    }
   };
+
+  const handleRegister = async () => {
+    console.log("Registering user with:", {});
+
+    // Implementar registro de usuario
+    onClose();
+  }
 
   if (!isOpen) return null;
 
@@ -76,9 +112,9 @@ const AuthModal = ({ isOpen, initialType, onClose }) => {
         {/* Formulario dinámico */}
         {activeTab === 'login' ? (
           <form className="space-y-5 max-w-sm mx-auto" onSubmit={handleSubmit} noValidate>
-            <Input label="Email o teléfono" type="email" placeholder="tu@email.com" required />
+            <Input label="Email o teléfono" type="email" placeholder="tu@email.com" required onChange={(e) => setLoginEmail(e.target.value)}/>
             <div className="relative">
-              <Input label="Contraseña" type="password" placeholder="••••••••" required />
+              <Input label="Contraseña" type="password" placeholder="••••••••" required onChange={(e) => setLoginPassword(e.target.value)}/>
               <button type="button" className="absolute right-3 top-9 text-subsonic-muted hover:text-subsonic-text transition-colors">Mostrar</button>
             </div>
             <Button type="submit" variant="primary" className="w-full py-4 text-base">Iniciar Sesión</Button>

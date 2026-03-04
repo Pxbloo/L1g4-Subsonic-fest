@@ -10,20 +10,36 @@ import CheckoutPage from '@/pages/CheckoutPage';
 function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(null); // null, 'login' o 'register'
+  const [user, setUser] = useState(null); // null o objeto de usuario
 
   const openLoginModal = () => setIsModalOpen('login');
   const openRegisterModal = () => setIsModalOpen('register');
   const closeModal = () => setIsModalOpen(null);
 
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+    closeModal();
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-subsonic-bg flex flex-col">
-        <Navbar onOpenLogin={openLoginModal} onOpenRegister={openRegisterModal} />
+        <Navbar
+            user={user}
+            onOpenLogin={openLoginModal}
+            onOpenRegister={openRegisterModal}
+            onLogout={handleLogout}
+        />
         
         <AuthModal 
           isOpen={isModalOpen !== null} 
           initialType={isModalOpen} 
           onClose={closeModal}
+          onLoginSuccess={handleLoginSuccess}
         />
 
         <main className="grow p-6 md:p-16">
