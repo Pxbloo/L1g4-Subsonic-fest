@@ -24,8 +24,6 @@ const Navbar = ({ user, onOpenLogin, onOpenRegister, onLogout }) => {
         {user ? (
           <div className="flex items-center gap-3">
               <AppLink href="/user-profile"
-                  //type="button"
-                  //onClick={GoToProfile}
                   className="flex items-center gap-3 hover:opacity-90 transition-opacity"
               >
                   <span className="text-subsonic-text"> Hola, {user.name}</span>

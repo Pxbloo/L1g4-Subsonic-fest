@@ -68,17 +68,4 @@ function App() {
   );
 }
 
-/*
-Añadir próximamente
-
-const ProtectedRoute = ({ user, children }) => {
-  if (!user) {
-    console.log("User not logged in, redirecting to homepage...", user);
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
-*/
-
-
 export default App;

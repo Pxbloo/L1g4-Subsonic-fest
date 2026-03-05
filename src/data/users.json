@@ -5,7 +5,7 @@
       "name": "Carlos Gómez",
       "email": "carlos.gomez@email.com",
       "phone": "+34 611 222 333",
-      "avatar": "https://i.pravatar.cc/150?u=1",
+      "avatar": "https://i.pravatar.cc/150?u=2",
       "address": {
         "country": "España",
         "city": "Madrid",
@@ -20,7 +20,7 @@
       "name": "María López (Proveedor)",
       "email": "maria.lopez@proveedor.es",
       "phone": "+34 655 444 777",
-      "avatar": "https://i.pravatar.cc/150?u=2",
+      "avatar": "https://i.pravatar.cc/150?u=1",
       "address": {
         "country": "España",
         "city": "Barcelona",

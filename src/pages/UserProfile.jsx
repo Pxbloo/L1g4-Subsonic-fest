@@ -10,8 +10,6 @@ const UserProfile = ({user}) => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-
-
     useEffect(() => {
         if (user) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -28,10 +26,9 @@ const UserProfile = ({user}) => {
                 },
             });
             setLoading(false);
-
         }
     }, [user]);
-    console.log("User profile loaded:", user);
+
     const purchases = useMemo(() => {
         return orderItems.map((item, index) => ({
             id: item.id,
@@ -81,6 +78,7 @@ const UserProfile = ({user}) => {
     }
 
     if (!profile) {
+        console.error("Profile data is missing. Unable to render user profile.");
         return (
             <section className="max-w-6xl mx-auto">
                 <header className="mb-6">
