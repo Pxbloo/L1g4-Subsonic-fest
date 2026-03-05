@@ -55,7 +55,7 @@ function App() {
         <main className="grow p-6 md:p-16">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/user-profile" element={<UserProfile />} />
+            <Route path="/user-profile" element={<UserProfile user={user} />} />
             <Route path="/checkout" element={<CheckoutPage />} />
 
           </Routes>

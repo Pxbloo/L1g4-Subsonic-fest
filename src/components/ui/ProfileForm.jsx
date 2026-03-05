@@ -1,5 +1,6 @@
 // src/components/profile/ProfileForm.jsx
 import React, {useEffect, useMemo, useState} from "react";
+import Button from "@/components/ui/Button.jsx";
 
 const ProfileForm = ({ value, isEditing, onEdit, onCancelEdit, onSave, onChangePassword }) => {
     const [fullName, setFullName] = useState(value?.fullName ?? "");
@@ -71,29 +72,29 @@ const ProfileForm = ({ value, isEditing, onEdit, onCancelEdit, onSave, onChangeP
                 <h3 className="text-lg font-black text-subsonic-text uppercase">Datos</h3>
 
                 {!isEditing ? (
-                    <button
+                    <Button
                         type="button"
                         onClick={onEdit}
                         className="border border-subsonic-border text-subsonic-text font-black px-5 py-2 rounded-full uppercase text-sm hover:border-subsonic-accent transition"
                     >
                         Editar
-                    </button>
+                    </Button>
                 ) : (
                     <div className="flex items-center gap-3">
-                        <button
+                        <Button
                             type="button"
                             onClick={handleCancel}
                             className="border border-subsonic-border text-subsonic-text font-black px-5 py-2 rounded-full uppercase text-sm hover:border-subsonic-accent transition"
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             form="profile-form"
                             className="bg-subsonic-accent text-subsonic-bg font-black px-5 py-2 rounded-full uppercase text-sm hover:opacity-90 transition"
                         >
                             Guardar
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -155,7 +156,7 @@ const ProfileForm = ({ value, isEditing, onEdit, onCancelEdit, onSave, onChangeP
                             <label className="text-xs font-bold text-subsonic-text/80">Dirección (línea 1)</label>
                             <input
                                 className={inputClass(readOnly)}
-                                value={address.line1}
+                                value={address.street}
                                 onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))}
                                 placeholder="Calle, número, piso, etc."
                                 autoComplete="address-line1"
@@ -225,7 +226,7 @@ const ProfileForm = ({ value, isEditing, onEdit, onCancelEdit, onSave, onChangeP
                         </div>
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={!canChangePassword}
                         className={[
@@ -236,7 +237,7 @@ const ProfileForm = ({ value, isEditing, onEdit, onCancelEdit, onSave, onChangeP
                         ].join(" ")}
                     >
                         Actualizar contraseña
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>
