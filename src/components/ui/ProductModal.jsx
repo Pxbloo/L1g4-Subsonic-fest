@@ -2,18 +2,17 @@ import React, { useEffect, useMemo, useState } from "react";
 
 function ProductModal({ open, product, onClose, onAddToCart }) {
     const [qty, setQty] = useState(0);
-    const [size, setSize] = useState("");
-    const [color, setColor] = useState("");
+    const [selectedOptions, setSelectedOptions] = useState({});
 
     const title = useMemo(() => product?.name ?? "Producto", [product]);
+    const purchaseOptions = useMemo(() => product?.purchaseOptions ?? [], [product]);
 
     // Reset state cada vez que se abre (así, si se cierra sin añadir, no se guarda nada)
     useEffect(() => {
         if (!open) return;
         // eslint-disable-next-line
         setQty(0);
-        setSize("");
-        setColor("");
+        setSelectedOptions({});
     }, [open]);
 
     // ESC + bloqueo de scroll
@@ -39,7 +38,17 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
 
     const canDecrement = qty > 0;
     const canIncrement = qty < 20;
-    const canAdd = qty > 0 && size && color;
+    const allOptionsSelected = purchaseOptions.every(
+        (option) => Boolean(selectedOptions[option.name])
+    );
+    const canAdd = qty > 0 && allOptionsSelected;
+
+    const handleOptionChange = (optionName, value) => {
+        setSelectedOptions((current) => ({
+            ...current,
+            [optionName]: value,
+        }));
+    };
 
     const handleAdd = () => {
         if (!canAdd) return;
@@ -47,8 +56,7 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
         onAddToCart?.({
             product,
             quantity: qty,
-            size,
-            color,
+            selectedOptions,
         });
 
         onClose?.();
@@ -110,9 +118,9 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
                         </div>
 
                         <div className="mt-4 flex items-center justify-between">
-              <span className="text-subsonic-accent text-2xl font-black">
-                {product.price}
-              </span>
+                            <span className="text-subsonic-accent text-2xl font-black">
+                                {product.price}
+                            </span>
 
                             {/* Seleccionar cantidad (mínimo 0 y máximo 20) */}
                             <div className="flex items-center gap-2">
@@ -148,46 +156,34 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
                         <p className="text-sm leading-relaxed opacity-85">
                             {product.description}
                         </p>
+                        {purchaseOptions.length > 0 && (
+                            <div className="mt-5 grid gap-4">
+                                {purchaseOptions.map((option) => (
+                                    <div key={option.name}>
+                                        <label className="mb-1 block text-sm font-black">
+                                            {option.label}
+                                        </label>
+                                        <select
+                                            value={selectedOptions[option.name] ?? ""}
+                                            onChange={(e) =>
+                                                handleOptionChange(option.name, e.target.value)
+                                            }
+                                            className="w-full bg-subsonic-bg/40 border border-subsonic-border px-4 py-2 outline-none focus:ring-2 focus:ring-subsonic-accent"
+                                        >
+                                            <option value="" disabled>
+                                                Selecciona {option.label.toLowerCase()}
+                                            </option>
 
-                        <div className="mt-5 grid gap-4">
-                            {/* Seleccionar talla */}
-                            <div>
-                                <label className="mb-1 block text-sm font-black">Talla</label>
-                                <select
-                                    value={size}
-                                    onChange={(e) => setSize(e.target.value)}
-                                    className="w-full bg-subsonic-bg/40 border border-subsonic-border px-4 py-2 outline-none focus:ring-2 focus:ring-subsonic-accent"
-                                >
-                                    <option value="" disabled>
-                                        Selecciona una talla
-                                    </option>
-                                    <option value="XS">XS</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                </select>
+                                            {option.values.map((value) => (
+                                                <option key={value} value={value}>
+                                                    {value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ))}
                             </div>
-
-                            {/* Seleccionar color */}
-                            <div>
-                                <label className="mb-1 block text-sm font-black">Color</label>
-                                <select
-                                    value={color}
-                                    onChange={(e) => setColor(e.target.value)}
-                                    className="w-full bg-subsonic-bg/40 border border-subsonic-border px-4 py-2 outline-none focus:ring-2 focus:ring-subsonic-accent"
-                                >
-                                    <option value="" disabled>
-                                        Selecciona un color
-                                    </option>
-                                    <option value="Negro">Negro</option>
-                                    <option value="Blanco">Blanco</option>
-                                    <option value="Rojo">Rojo</option>
-                                    <option value="Azul">Azul</option>
-                                    <option value="Verde">Verde</option>
-                                </select>
-                            </div>
-                        </div>
+                        )}
 
                         <div className="mt-6 flex gap-3">
                             <button
@@ -209,7 +205,9 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
                         </div>
 
                         <p className="mt-3 text-xs text-subsonic-muted">
-                            Para añadir: selecciona cantidad, talla y color.
+                            {purchaseOptions.length > 0
+                                ? "Selecciona cantidad y las opciones del producto."
+                                : "Selecciona la cantidad para añadir el producto."}
                         </p>
                     </div>
                 </div>

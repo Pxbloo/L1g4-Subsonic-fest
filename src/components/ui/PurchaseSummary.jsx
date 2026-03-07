@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/Button";
 
@@ -8,58 +8,65 @@ const formatCurrency = (value) =>
         currency: "EUR",
     });
 
-function PurchaseSummary({ open, items = [], onClose }) {
+const formatOptionLabel = (optionName) => {
+    const labels = {
+        size: "Tamaño",
+        color: "Color",
+        format: "Formato",
+        finish: "Acabado",
+    };
+
+    return labels[optionName] ?? optionName;
+};
+
+function PurchaseSummary({
+    open,
+    items = [],
+    onClose,
+    onIncreaseItem,
+    onDecreaseItem,
+}) {
     const navigate = useNavigate();
 
-    const groupedItems = useMemo(() => {
-        const groups = new Map();
+    // ESC + bloqueo de scroll
+    useEffect(() => {
+        if (!open) return;
 
-        items.forEach((item) => {
-            const name = item.product?.name ?? "Producto";
-            const size = item.size ?? "-";
-            const color = item.color ?? "-";
-            const unitPrice = Number(item.unitPrice ?? 0);
-            const quantity = Number(item.quantity ?? 0);
+        const onKeyDown = (e) => {
+            if (e.key === "Escape") onClose?.();
+        };
 
-            const key = `${name}__${size}__${color}`;
+        document.addEventListener("keydown", onKeyDown);
 
-            if (!groups.has(key)) {
-                groups.set(key, {
-                    key,
-                    name,
-                    size,
-                    color,
-                    quantity: 0,
-                    unitPrice,
-                    totalPrice: 0,
-                });
-            }
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
 
-            const currentGroup = groups.get(key);
-            currentGroup.quantity += quantity;
-            currentGroup.totalPrice += unitPrice * quantity;
-        });
-
-        return Array.from(groups.values());
-    }, [items]);
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [open, onClose]);
 
     const totalAmount = useMemo(
-        () => groupedItems.reduce((sum, item) => sum + item.totalPrice, 0),
-        [groupedItems]
+        () => items.reduce((sum, item) => sum + item.totalPrice, 0),
+        [items]
     );
 
     const totalUnits = useMemo(
-        () => groupedItems.reduce((sum, item) => sum + item.quantity, 0),
-        [groupedItems]
+        () => items.reduce((sum, item) => sum + item.quantity, 0),
+        [items]
     );
 
     const handleGoToPayment = () => {
         navigate("/checkout", {
             state: {
-                orderItems: groupedItems.map((item, index) => ({
+                orderItems: items.map((item, index) => ({
                     id: `${item.key}-${index}`,
-                    name: item.name,
-                    category: `Talla: ${item.size} · Color: ${item.color}`,
+                    name: item.productName,
+                    category:
+                        Object.entries(item.selectedOptions ?? {})
+                            .map(([key, value]) => `${formatOptionLabel(key)}: ${value}`)
+                            .join(" · ") || item.productCategory,
                     quantity: item.quantity,
                     price: item.totalPrice,
                     unitPrice: item.unitPrice,
@@ -109,31 +116,59 @@ function PurchaseSummary({ open, items = [], onClose }) {
                 </div>
 
                 <div className="max-h-[60vh] overflow-y-auto p-5">
-                    {groupedItems.length === 0 ? (
+                    {items.length === 0 ? (
                         <div className="rounded-xl border border-subsonic-border bg-subsonic-bg/40 px-4 py-6 text-center text-subsonic-muted">
                             No hay productos añadidos todavía.
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {groupedItems.map((item) => (
+                            {items.map((item) => (
                                 <div
                                     key={item.key}
                                     className="rounded-xl border border-subsonic-border bg-subsonic-bg/40 px-4 py-4"
                                 >
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
                                             <p className="text-sm font-black uppercase">
-                                                {item.name}
+                                                {item.productName}
                                             </p>
-                                            <p className="mt-1 text-xs text-subsonic-muted">
-                                                Cantidad: {item.quantity}
-                                            </p>
-                                            <p className="text-xs text-subsonic-muted">
-                                                Talla: {item.size}
-                                            </p>
-                                            <p className="text-xs text-subsonic-muted">
-                                                Color: {item.color}
-                                            </p>
+
+                                            <div className="mt-2 space-y-1">
+                                                {Object.entries(item.selectedOptions ?? {}).map(
+                                                    ([key, value]) => (
+                                                        <p
+                                                            key={key}
+                                                            className="text-xs text-subsonic-muted"
+                                                        >
+                                                            {formatOptionLabel(key)}: {value}
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onDecreaseItem?.(item.key)}
+                                                    className="h-9 w-9 rounded-full border border-subsonic-border bg-subsonic-bg/40 font-black hover:bg-white/10 transition"
+                                                    aria-label={`Quitar una unidad de ${item.productName}`}
+                                                >
+                                                    −
+                                                </button>
+
+                                                <div className="min-w-10 text-center text-sm font-black">
+                                                    {item.quantity}
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onIncreaseItem?.(item.key)}
+                                                    className="h-9 w-9 rounded-full border border-subsonic-border bg-subsonic-bg/40 font-black hover:bg-white/10 transition"
+                                                    aria-label={`Añadir una unidad de ${item.productName}`}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div className="text-left sm:text-right">
@@ -174,9 +209,9 @@ function PurchaseSummary({ open, items = [], onClose }) {
                         <Button
                             type="button"
                             variant="primary"
-                            className="sm:flex-1"
+                            className="sm:flex-1 disabled:opacity-40 disabled:hover:bg-subsonic-accent"
                             onClick={handleGoToPayment}
-                            disabled={groupedItems.length === 0}
+                            disabled={items.length === 0}
                         >
                             Ir a pago
                         </Button>

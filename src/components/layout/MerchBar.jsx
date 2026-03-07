@@ -1,5 +1,5 @@
 import React from "react";
-import SearchBar from "@/components/ui/SerchBar.jsx";
+import SearchBar from "@/components/ui/SearchBar.jsx";
 
 function MerchCategoryBar({ categories, activeCategoryId, onChangeCategory,
 searchValue = "", onChangeSearch, onSearch, onOpenPurchaseSummary, cartCount = 0,}) {

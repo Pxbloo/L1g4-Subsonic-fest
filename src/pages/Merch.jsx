@@ -6,6 +6,17 @@ import PurchaseSummary from "@/components/ui/PurchaseSummary.jsx";
 
 const parsePrice = (price) => Number(String(price).replace("€", "").replace(",", "."));
 
+const normalizeOptions = (selectedOptions = {}) =>
+    Object.entries(selectedOptions)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+
+const buildCartItemKey = (productName, selectedOptions = {}) =>
+    `${productName}__${JSON.stringify(normalizeOptions(selectedOptions))}`;
+
 function Merch() {
     // 1) Categorías
     const categories = useMemo(
@@ -36,6 +47,10 @@ function Merch() {
                 categoryLabel: "Ropa",
                 price: "29.99€",
                 description: "Camiseta oficial del festival de 2024 con diseño exclusivo",
+                purchaseOptions: [
+                    { name: "size", label: "Talla", values: ["XS", "S", "M", "L", "XL"] },
+                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul", "Verde"] },
+                ],
             },
 
             {
@@ -45,6 +60,10 @@ function Merch() {
                 categoryLabel: "Nuevo, Ropa",
                 price: "34.99€",
                 description: "Camiseta oficial del festival de 2025 con diseño exclusivo",
+                purchaseOptions: [
+                    { name: "size", label: "Talla", values: ["XS", "S", "M", "L", "XL"] },
+                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul", "Verde"] },
+                ],
             },
 
             {
@@ -54,6 +73,9 @@ function Merch() {
                 categoryLabel: "Nuevo, Accesorios",
                 price: "19.99€",
                 description: "Gorra oficial del festival con diseño exclusivo",
+                purchaseOptions: [
+                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul"] },
+                ],
             },
 
             {
@@ -62,7 +84,10 @@ function Merch() {
                 categoryId: "perfumes",
                 categoryLabel: "Perfumes",
                 price: "39.99€",
-                description: "Edición limitada"
+                description: "Edición limitada",
+                purchaseOptions: [
+                    { name: "size", label: "Tamaño", values: ["30 ml", "50 ml", "100 ml"] },
+                ],
             },
 
             {
@@ -71,7 +96,11 @@ function Merch() {
                 categoryId: ["nuevo", "libros"],
                 categoryLabel: "Nuevo, Libros",
                 price: "11.99€",
-                description: "Libro oficial del evento"
+                description: "Libro oficial del evento",
+                purchaseOptions: [
+                    { name: "format", label: "Formato", values: ["Tapa blanda", "Tapa dura"] },
+                ],
+
             },
 
             {
@@ -80,7 +109,11 @@ function Merch() {
                 categoryId: ["nuevo", "posters"],
                 categoryLabel: "Nuevo, Posters",
                 price: "14.99€",
-                description: "Póster oficial"
+                description: "Póster oficial",
+                purchaseOptions: [
+                    { name: "size", label: "Tamaño", values: ["A4", "A3", "A2"] },
+                    { name: "finish", label: "Acabado", values: ["Mate", "Brillo"] },
+                ],
             },
         ],
         []
@@ -91,14 +124,63 @@ function Merch() {
         [cartItems]
     );
 
-    const handleAddToCart = (payload) => {
-        setCartItems((currentItems) => [
-            ...currentItems,
-            {
-                ...payload,
-                unitPrice: parsePrice(payload.product?.price),
-            },
-        ]);
+    const handleAddToCart = ({ product, quantity, selectedOptions }) => {
+        const normalizedOptions = normalizeOptions(selectedOptions);
+        const itemKey = buildCartItemKey(product.name, normalizedOptions);
+        const unitPrice = parsePrice(product.price);
+
+        setCartItems((currentItems) => {
+            const existingItem = currentItems.find((item) => item.key === itemKey);
+
+            if (existingItem) {
+                return currentItems.map((item) =>
+                    item.key === itemKey
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                );
+            }
+
+            return [
+                ...currentItems,
+                {
+                    key: itemKey,
+                    productName: product.name,
+                    productCategory: product.category,
+                    quantity,
+                    unitPrice,
+                    totalPrice: unitPrice * quantity,
+                    selectedOptions: normalizedOptions,
+                },
+            ];
+        });
+    };
+
+    const updateCartItemQuantity = (itemKey, nextQuantity) => {
+        setCartItems((currentItems) =>
+            currentItems
+                .map((item) =>
+                    item.key === itemKey
+                        ? {
+                            ...item,
+                            quantity: nextQuantity,
+                            totalPrice: item.unitPrice * nextQuantity,
+                        }
+                        : item
+                )
+                .filter((item) => item.quantity > 0)
+        );
+    };
+
+    const handleIncreaseItem = (itemKey) => {
+        const target = cartItems.find((item) => item.key === itemKey);
+        if (!target || target.quantity > 19) return;
+        updateCartItemQuantity(itemKey, target.quantity + 1);
+    };
+
+    const handleDecreaseItem = (itemKey) => {
+        const target = cartItems.find((item) => item.key === itemKey);
+        if (!target) return;
+        updateCartItemQuantity(itemKey, target.quantity - 1);
     };
 
     // 4) Filtrado por categoría seleccionada
@@ -145,6 +227,7 @@ function Merch() {
                         category={p.categoryLabel}
                         price={p.price}
                         description={p.description}
+                        purchaseOptions={p.purchaseOptions}
                         onAddToCart={handleAddToCart}
                     />
                 ))}
@@ -154,6 +237,8 @@ function Merch() {
                 open={isSummaryOpen}
                 items={cartItems}
                 onClose={() => setIsSummaryOpen(false)}
+                onIncreaseItem={handleIncreaseItem}
+                onDecreaseItem={handleDecreaseItem}
             />
         </section>
     );
