@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import ProductModal from './ProductModal';
 
-const ShopCard = ({ name, category, price, description, image}) => {
+const ShopCard = ({ name, category, price, description, image, onAddToCart}) => {
 
     const [open, setOpen] = useState(false);
 
@@ -31,11 +31,7 @@ const ShopCard = ({ name, category, price, description, image}) => {
                     open={open}
                     product={product}
                     onClose={() => setOpen(false)}
-                    onAddToCart={(payload) => {
-                        // TODO: Conectar con tu estado global / context / store
-                        // payload = { product, quantity, size, color }
-                        console.log("ADD_TO_CART", payload);
-                    }}
+                    onAddToCart={onAddToCart}
                 />
             </div>
         </div>

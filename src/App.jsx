@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Home from '@/pages/Home';
 import AuthModal from '@/components/ui/AuthModal';
 import UserProfile from "@/pages/UserProfile.jsx";
+import Merch from "@/pages/Merch.jsx";
 import CheckoutPage from '@/pages/CheckoutPage';
 import FestivalInstance from '@/pages/FestivalInstance';
 
@@ -30,6 +31,7 @@ function App() {
         <main className="grow p-6 md:p-16">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Tienda" element={<Merch />} />
             <Route path="/user-profile" element={<UserProfile />} />            
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/festival/:id" element={<FestivalInstance />} />

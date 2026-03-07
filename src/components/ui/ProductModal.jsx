@@ -38,6 +38,7 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
     if (!open || !product) return null;
 
     const canDecrement = qty > 0;
+    const canIncrement = qty < 20;
     const canAdd = qty > 0 && size && color;
 
     const handleAdd = () => {
@@ -131,8 +132,9 @@ function ProductModal({ open, product, onClose, onAddToCart }) {
 
                                 <button
                                     type="button"
-                                    className="h-10 w-10 rounded-full border border-subsonic-border bg-subsonic-bg/40 font-black hover:bg-white/10 transition"
+                                    className="h-10 w-10 rounded-full border border-subsonic-border bg-subsonic-bg/40 font-black hover:bg-white/10 transition disabled:opacity-40"
                                     onClick={() => setQty((q) => Math.min(20, q + 1))}
+                                    disabled={!canIncrement}
                                     aria-label="Añadir uno"
                                 >
                                     +

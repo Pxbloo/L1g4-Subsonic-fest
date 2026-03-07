@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
-import ShopCard from "@/components/ui/ShopCard";
-import MerchCategoryBar from "@/components/layout/MerchBar";
+import ShopCard from "@/components/ui/ShopCard.jsx";
+import MerchCategoryBar from "@/components/layout/MerchBar.jsx";
+import PurchaseSummary from "@/components/ui/PurchaseSummary.jsx";
+
+
+const parsePrice = (price) => Number(String(price).replace("€", "").replace(",", "."));
 
 function Merch() {
     // 1) Categorías
@@ -18,6 +22,9 @@ function Merch() {
 
     // 2) Estado: categoría seleccionada
     const [activeCategoryId, setActiveCategoryId] = useState(categories[0]?.id ?? "ropa");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [cartItems, setCartItems] = useState([]);
+    const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
     // 3) “Modelo” de productos
     const products = useMemo(
@@ -79,11 +86,36 @@ function Merch() {
         []
     );
 
-    // 4) Filtrado por categoría seleccionada
-    const visibleProducts = useMemo(
-        () => products.filter((p) => p.categoryId.includes(activeCategoryId)),
-        [products, activeCategoryId]
+    const totalCartUnits = useMemo(
+        () => cartItems.reduce((sum, item) => sum + Number(item.quantity ?? 0), 0),
+        [cartItems]
     );
+
+    const handleAddToCart = (payload) => {
+        setCartItems((currentItems) => [
+            ...currentItems,
+            {
+                ...payload,
+                unitPrice: parsePrice(payload.product?.price),
+            },
+        ]);
+    };
+
+    // 4) Filtrado por categoría seleccionada
+    const visibleProducts = useMemo(() => {
+        const q = searchTerm.trim().toLowerCase();
+
+        return products
+            .filter((p) => {
+                const ids = Array.isArray(p.categoryId) ? p.categoryId : [p.categoryId];
+                return ids.includes(activeCategoryId);
+            })
+            .filter((p) => {
+                if (!q) return true;
+                const haystack = `${p.name ?? ""}`.toLowerCase();
+                return haystack.includes(q);
+            });
+    }, [products, activeCategoryId, searchTerm]);
 
     return (
         <section className="space-y-6 -mt-6 md:-mt-16">
@@ -93,6 +125,10 @@ function Merch() {
                     categories={categories}
                     activeCategoryId={activeCategoryId}
                     onChangeCategory={setActiveCategoryId}
+                    searchValue={searchTerm}
+                    onChangeSearch={setSearchTerm}
+                    onOpenPurchaseSummary={() => setIsSummaryOpen(true)}
+                    cartCount={totalCartUnits}
                 />
             </div>
 
@@ -109,9 +145,16 @@ function Merch() {
                         category={p.categoryLabel}
                         price={p.price}
                         description={p.description}
+                        onAddToCart={handleAddToCart}
                     />
                 ))}
             </div>
+
+            <PurchaseSummary
+                open={isSummaryOpen}
+                items={cartItems}
+                onClose={() => setIsSummaryOpen(false)}
+            />
         </section>
     );
 }
