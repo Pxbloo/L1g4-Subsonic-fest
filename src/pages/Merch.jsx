@@ -67,7 +67,7 @@ function Merch() {
             },
 
             {
-                id: "tee-subsonic-2025",
+                id: "gorra-subsonic-2025",
                 name: "Gorra Subsonic 2025",
                 categoryId: ["nuevo", "accesorios"],
                 categoryLabel: "Nuevo, Accesorios",
@@ -86,7 +86,7 @@ function Merch() {
                 price: "39.99€",
                 description: "Edición limitada",
                 purchaseOptions: [
-                    { name: "size", label: "Tamaño", values: ["30 ml", "50 ml", "100 ml"] },
+                    { name: "extent", label: "Tamaño", values: ["30 ml", "50 ml", "100 ml"] },
                 ],
             },
 
@@ -111,7 +111,7 @@ function Merch() {
                 price: "14.99€",
                 description: "Póster oficial",
                 purchaseOptions: [
-                    { name: "size", label: "Tamaño", values: ["A4", "A3", "A2"] },
+                    { name: "extent", label: "Tamaño", values: ["A4", "A3", "A2"] },
                     { name: "finish", label: "Acabado", values: ["Mate", "Brillo"] },
                 ],
             },
@@ -133,11 +133,17 @@ function Merch() {
             const existingItem = currentItems.find((item) => item.key === itemKey);
 
             if (existingItem) {
-                return currentItems.map((item) =>
-                    item.key === itemKey
-                        ? { ...item, quantity: item.quantity + quantity }
-                        : item
-                );
+                return currentItems.map((item) => {
+                    if (item.key !== itemKey) {
+                        return item;
+                    }
+                    const newQuantity = item.quantity + quantity;
+                    return {
+                        ...item,
+                        quantity: newQuantity,
+                        totalPrice: item.unitPrice * newQuantity,
+                    };
+                });
             }
 
             return [
@@ -215,7 +221,7 @@ function Merch() {
             </div>
 
             <header>
-                <h1 className="text-4xl font-bold text-cyan-400">Merchandising</h1>
+                <h1 className="text-4xl font-su text-subsonic-accent">Merchandising</h1>
                 <p className="text-subsonic-muted">Productos de ensueño de tus festivales favoritos</p>
             </header>
 

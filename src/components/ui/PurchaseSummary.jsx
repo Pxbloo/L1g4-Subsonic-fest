@@ -10,7 +10,8 @@ const formatCurrency = (value) =>
 
 const formatOptionLabel = (optionName) => {
     const labels = {
-        size: "Tamaño",
+        extent: "Tamaño",
+        size: "Talla",
         color: "Color",
         format: "Formato",
         finish: "Acabado",
@@ -74,6 +75,7 @@ function PurchaseSummary({
                 totalAmount,
             },
         });
+        navigate("/checkout");
 
         onClose?.();
     };

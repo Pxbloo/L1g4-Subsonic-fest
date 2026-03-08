@@ -8,8 +8,8 @@ searchValue = "", onChangeSearch, onSearch, onOpenPurchaseSummary, cartCount = 0
             aria-label="Categorías de la tienda"
             className="
                 w-full
-                bg-zinc-800/80
-                border-y border-white/10
+                bg-subsonic-surface
+                border-y border-subsonic-border
                 backdrop-blur
             "
         >
@@ -34,8 +34,8 @@ searchValue = "", onChangeSearch, onSearch, onOpenPurchaseSummary, cartCount = 0
                                     transition
                                 ${
                                     isActive
-                                        ? "bg-transparent text-cyan-300"
-                                        : "bg-transparent text-white/70 hover: hover:text-cyan-700"
+                                        ? "bg-transparent text-subsonic-accent"
+                                        : "bg-transparent text-subsonic-text/70 hover:text-subsonic-btn"
                                 }
                                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30
                             `}
