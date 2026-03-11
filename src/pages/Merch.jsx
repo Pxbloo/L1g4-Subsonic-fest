@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import ShopCard from "@/components/ui/ShopCard.jsx";
 import MerchCategoryBar from "@/components/layout/MerchBar.jsx";
 import PurchaseSummary from "@/components/ui/PurchaseSummary.jsx";
+import merchandisingData from "@/data/merchandising.json";
 
 
 const parsePrice = (price) => Number(String(price).replace("€", "").replace(",", "."));
@@ -18,106 +19,15 @@ const buildCartItemKey = (productName, selectedOptions = {}) =>
     `${productName}__${JSON.stringify(normalizeOptions(selectedOptions))}`;
 
 function Merch() {
-    // 1) Categorías
-    const categories = useMemo(
-        () => [
-            { id: "nuevo", label: "Nuevo" },
-            { id: "ropa", label: "Ropa" },
-            { id: "accesorios", label: "Accesorios" },
-            { id: "perfumes", label: "Perfumes" },
-            { id: "libros", label: "Libros" },
-            { id: "posters", label: "Posters" },
-        ],
-        []
-    );
+    // 1) Categorías y productos desde el JSON de merchandising
+    const categories = merchandisingData.categories ?? [];
+    const products = merchandisingData.products ?? [];
 
     // 2) Estado: categoría seleccionada
     const [activeCategoryId, setActiveCategoryId] = useState(categories[0]?.id ?? "ropa");
     const [searchTerm, setSearchTerm] = useState("");
     const [cartItems, setCartItems] = useState([]);
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
-
-    // 3) “Modelo” de productos
-    const products = useMemo(
-        () => [
-            {
-                id: "camiseta-subsonic-2024",
-                name: "Camiseta Subsonic 2024",
-                categoryId: "ropa",
-                categoryLabel: "Ropa",
-                price: "29.99€",
-                description: "Camiseta oficial del festival de 2024 con diseño exclusivo",
-                purchaseOptions: [
-                    { name: "size", label: "Talla", values: ["XS", "S", "M", "L", "XL"] },
-                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul", "Verde"] },
-                ],
-            },
-
-            {
-                id: "camiseta-subsonic-2025",
-                name: "Camiseta Subsonic 2025",
-                categoryId: ["nuevo", "ropa"],
-                categoryLabel: "Nuevo, Ropa",
-                price: "34.99€",
-                description: "Camiseta oficial del festival de 2025 con diseño exclusivo",
-                purchaseOptions: [
-                    { name: "size", label: "Talla", values: ["XS", "S", "M", "L", "XL"] },
-                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul", "Verde"] },
-                ],
-            },
-
-            {
-                id: "gorra-subsonic-2025",
-                name: "Gorra Subsonic 2025",
-                categoryId: ["nuevo", "accesorios"],
-                categoryLabel: "Nuevo, Accesorios",
-                price: "19.99€",
-                description: "Gorra oficial del festival con diseño exclusivo",
-                purchaseOptions: [
-                    { name: "color", label: "Color", values: ["Negro", "Blanco", "Rojo", "Azul"] },
-                ],
-            },
-
-            {
-                id: "perfume-subsonic",
-                name: "Fragancia Subsonic",
-                categoryId: "perfumes",
-                categoryLabel: "Perfumes",
-                price: "39.99€",
-                description: "Edición limitada",
-                purchaseOptions: [
-                    { name: "extent", label: "Tamaño", values: ["30 ml", "50 ml", "100 ml"] },
-                ],
-            },
-
-            {
-                id: "libro-subsonic",
-                name: "Libro Subsonic 2025",
-                categoryId: ["nuevo", "libros"],
-                categoryLabel: "Nuevo, Libros",
-                price: "11.99€",
-                description: "Libro oficial del evento",
-                purchaseOptions: [
-                    { name: "format", label: "Formato", values: ["Tapa blanda", "Tapa dura"] },
-                ],
-
-            },
-
-            {
-                id: "poster-subsonic",
-                name: "Póster Subsonic 2025",
-                categoryId: ["nuevo", "posters"],
-                categoryLabel: "Nuevo, Posters",
-                price: "14.99€",
-                description: "Póster oficial",
-                purchaseOptions: [
-                    { name: "extent", label: "Tamaño", values: ["A4", "A3", "A2"] },
-                    { name: "finish", label: "Acabado", values: ["Mate", "Brillo"] },
-                ],
-            },
-        ],
-        []
-    );
 
     const totalCartUnits = useMemo(
         () => cartItems.reduce((sum, item) => sum + Number(item.quantity ?? 0), 0),
@@ -189,7 +99,7 @@ function Merch() {
         updateCartItemQuantity(itemKey, target.quantity - 1);
     };
 
-    // 4) Filtrado por categoría seleccionada
+    // 3) Filtrado por categoría seleccionada
     const visibleProducts = useMemo(() => {
         const q = searchTerm.trim().toLowerCase();
 
@@ -251,5 +161,3 @@ function Merch() {
 }
 
 export default Merch;
-
-
