@@ -20,7 +20,7 @@ function App() {
 
   const checkUserExists = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3001/users/${userId}`);
+      const response = await fetch(`http://localhost:3000/users/${userId}`);
       return response.ok;
     }
     catch (error) {

@@ -1,9 +1,36 @@
-import { useCallback, useMemo, useState } from "react";
-import festivals from "@/data/festivals.json";
-import grounds from "@/data/grounds.json";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const useSalesDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [festivals, setFestivals] = useState([]);
+  const [grounds, setGrounds] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [festivalsRes, groundsRes] = await Promise.allSettled([
+          fetch('http://localhost:3000/festivals'),
+          fetch('http://localhost:3000/grounds'),
+        ]);
+
+        if (festivalsRes.status === 'fulfilled' && festivalsRes.value.ok) {
+          const data = await festivalsRes.value.json();
+          setFestivals(data || []);
+        }
+
+        if (groundsRes.status === 'fulfilled' && groundsRes.value.ok) {
+          const data = await groundsRes.value.json();
+          setGrounds(data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        setFestivals([]);
+        setGrounds([]);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filteredFestivals = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
