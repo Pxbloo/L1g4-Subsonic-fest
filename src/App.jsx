@@ -12,6 +12,7 @@ import History from '@/pages/History';
 import GroundsManagement from '@/pages/GroundsManagement.jsx';
 import Merch from '@/pages/Merch';
 import SalesDashboard from '@/pages/SalesDashboard.jsx';
+import FestivalsManagement from '@/pages/FestivalsManagement';
 
 function App() {
 
@@ -99,6 +100,7 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/grounds" element={<GroundsManagement />} />
             <Route path="/sales-dashboard" element={<SalesDashboard />} />
+            <Route path="/dashboard-festivales" element={<FestivalsManagement />} />
           </Routes>
         </main>
 
