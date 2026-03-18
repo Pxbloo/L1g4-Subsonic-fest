@@ -18,6 +18,7 @@ const menuItems = {
     ],
     admin: [
         {href: "/", label: "Inicio"},
+        {href: "/dashboard-festivales", label: "Gestión de festivales"},
         {href: "/dashboard-recintos", label: "Gestión de recintos"},
         {href: "/dashboard-usuarios", label: "Gestión de usuarios"},
         {href: "/dashboard-artistas", label: "Gestión de artistas"},
