@@ -1,0 +1,262 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Carlos Gómez",
+      "email": "carlos.gomez@email.com",
+      "phone": "+34 611 222 333",
+      "avatar": "https://i.pravatar.cc/150?u=2",
+      "address": {
+        "country": "España",
+        "city": "Madrid",
+        "street": "Calle de la Princesa, 25",
+        "postalCode": "28008"
+      },
+      "password": "cliente123",
+      "role": "client"
+    },
+    {
+      "id": "2",
+      "name": "María López (Proveedor)",
+      "email": "maria.lopez@proveedor.es",
+      "phone": "+34 655 444 777",
+      "avatar": "https://i.pravatar.cc/150?u=1",
+      "address": {
+        "country": "España",
+        "city": "Barcelona",
+        "street": "Avinguda Diagonal, 450",
+        "postalCode": "08006"
+      },
+      "password": "proveedor456",
+      "role": "provider"
+    },
+    {
+      "id": "3",
+      "name": "Ana Martín (Admin)",
+      "email": "ana.martin@admin.com",
+      "phone": "+34 699 888 111",
+      "avatar": "https://i.pravatar.cc/150?u=3",
+      "address": {
+        "country": "España",
+        "city": "Valencia",
+        "street": "Calle Colón, 12",
+        "postalCode": "46004"
+      },
+      "password": "admin789",
+      "role": "admin"
+    }
+  ],
+  "festivals": [
+    {
+      "id": 1,
+      "title": "Summer Subsonic",
+      "date": "15-17 Jul 2026",
+      "startDate": "2026-07-15",
+      "location": "Recinto Ferial, Madrid",
+      "price": "Desde 89€",
+      "description": "El evento principal del verano con los mejores artistas internacionales. Tres días de música, arte inmersivo y tecnología punta.",
+      "tickets": [
+        { "name": "General Pass", "price": "89€", "features": ["Acceso al recinto", "Zona de restauración", "Escenarios principales"] },
+        { "name": "VIP Experience", "price": "155€", "features": ["Acceso preferente", "Zona VIP elevada", "Barra libre de refrescos", "Baños privados"] },
+        { "name": "Backstage Pass", "price": "250€", "features": ["Acceso al Backstage", "Meet & Greet (Sorteo)", "Catering exclusivo", "Parking VIP"] }
+      ],
+      "lineup": [
+        { "id": "bad-bunny", "name": "Bad Bunny", "genre": "Reggaeton / Trap" },
+        { "id": "karol-g", "name": "Karol G", "genre": "Pop Urbano" },
+        { "id": "bizarrap", "name": "Bizarrap", "genre": "Electrónica / Urbano" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Electronic Night",
+      "date": "22 Ago 2026",
+      "startDate": "2026-08-22",
+      "location": "Industrial Park, Barcelona",
+      "price": "Desde 45€",
+      "description": "Una noche dedicada a los ritmos urbanos y electrónicos en un entorno industrial transformado.",
+      "tickets": [
+        { "name": "Early Bird", "price": "35€", "features": ["Acceso anticipado", "Consumición incluida"] },
+        { "name": "Standard Entry", "price": "45€", "features": ["Acceso general", "Zona de descanso"] }
+      ],
+      "lineup": [
+        { "id": "quevedo", "name": "Quevedo", "genre": "Urbano" },
+        { "id": "bizarrap", "name": "Bizarrap", "genre": "Electrónica / Urbano" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Sónar Barcelona 2025",
+      "date": "13-15 Jun 2025",
+      "startDate": "2025-06-13",
+      "location": "Fira Montjuïc, Barcelona",
+      "price": "Desde 120€",
+      "description": "Edición centrada en la vanguardia, arte digital y tecnología aplicada a la música.",
+      "tickets": [
+        { "name": "Abono 3 Días", "price": "120€", "features": ["Acceso Sónar de Día", "Acceso Sónar de Noche", "Sónar+D"] },
+        { "name": "VIP 3 Días", "price": "240€", "features": ["Fast track", "Zonas VIP exclusivas", "Bebidas premium"] }
+      ],
+      "lineup": [
+        { "id": "the-weeknd", "name": "The Weeknd", "genre": "R&B / Pop" },
+        { "id": "tame-impala", "name": "Tame Impala", "genre": "Psychedelic Rock" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Primavera Sound 2025",
+      "date": "5-8 Jun 2025",
+      "startDate": "2025-06-05",
+      "location": "Parc del Fòrum, Barcelona",
+      "price": "Desde 135€",
+      "description": "Festival urbano junto al mar que mezcla electrónica, rock y pop experimental.",
+      "tickets": [
+        { "name": "Abono General", "price": "135€", "features": ["Acceso todos los días", "Pack de bienvenida"] },
+        { "name": "Abono VIP", "price": "250€", "features": ["Vista panorámica", "Carril de acceso exclusivo", "Crédito para merch"] }
+      ],
+      "lineup": [
+        { "id": "foo-fighters", "name": "Foo Fighters", "genre": "Rock Alternativo" },
+        { "id": "billie-eilish", "name": "Billie Eilish", "genre": "Pop" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Tomorrowland Belgium 2026",
+      "date": "19-21 Jul 2026",
+      "startDate": "2026-07-19",
+      "location": "De Schorre, Boom (Bélgica)",
+      "price": "Desde 295€",
+      "description": "El festival más icónico del mundo con una producción escénica de fantasía.",
+      "tickets": [
+        { "name": "Full Madness", "price": "295€", "features": ["Acceso 3 días", "Treasure case"] },
+        { "name": "Comfort Pass", "price": "435€", "features": ["Acceso a plataformas VIP", "Vistas exclusivas", "Aperitivos"] }
+      ],
+      "lineup": [
+        { "id": "bizarrap", "name": "Bizarrap", "genre": "Electrónica / Urbano" },
+        { "id": "karol-g", "name": "Karol G", "genre": "Pop Urbano" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Rock in Rio Madrid 2026",
+      "date": "26-28 Jun 2026",
+      "startDate": "2026-06-26",
+      "location": "Arganda del Rey, Madrid",
+      "price": "Desde 95€",
+      "description": "La ciudad del rock vuelve con las bandas más grandes del planeta.",
+      "tickets": [
+        { "name": "Entrada Diaria", "price": "95€", "features": ["Acceso 1 día", "Tirolina incluida"] },
+        { "name": "VIP Pass", "price": "190€", "features": ["Catering ilimitado", "Aire acondicionado", "Vista frontal escenario"] }
+      ],
+      "lineup": [
+        { "id": "red-hot-chili-peppers", "name": "Red Hot Chili Peppers", "genre": "Rock" },
+        { "id": "foo-fighters", "name": "Foo Fighters", "genre": "Rock Alternativo" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Mad Cool Festival 2026",
+      "date": "10-13 Jul 2026",
+      "startDate": "2026-07-10",
+      "location": "Villaverde, Madrid",
+      "price": "Desde 110€",
+      "description": "El festival de referencia en la capital con un cartel ecléctico y potente.",
+      "tickets": [
+        { "name": "Abono 4 Días", "price": "110€", "features": ["Acceso total", "Pulsera inteligente"] },
+        { "name": "VIP Abono", "price": "220€", "features": ["Zona relax", "Puntos de carga", "Barra propia"] }
+      ],
+      "lineup": [
+        { "id": "billie-eilish", "name": "Billie Eilish", "genre": "Pop" },
+        { "id": "tame-impala", "name": "Tame Impala", "genre": "Psychedelic Rock" },
+        { "id": "the-weeknd", "name": "The Weeknd", "genre": "R&B / Pop" }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Resurrection Fest 2026",
+      "date": "01-04 Jul 2026",
+      "startDate": "2026-07-01",
+      "location": "Viveiro, Galicia",
+      "price": "Desde 140€",
+      "description": "La cita ineludible para los amantes del Metal y el Hardcore en el norte de España.",
+      "tickets": [
+        { "name": "Pandemonium", "price": "210€", "features": ["Área VIP Pandemonium", "Grada lateral", "Plataformas elevadas"] },
+        { "name": "Abono Estándar", "price": "140€", "features": ["Acceso 4 días", "Zona de acampada libre"] }
+      ],
+      "lineup": [
+        { "id": "iron-maiden", "name": "Iron Maiden", "genre": "Heavy Metal" },
+        { "id": "foo-fighters", "name": "Foo Fighters", "genre": "Rock Alternativo" }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Coachella 2026",
+      "date": "10-12 Abr 2026",
+      "startDate": "2026-04-10",
+      "location": "Indio, California (USA)",
+      "price": "Desde 499€",
+      "description": "Tendencias, moda y música en medio del desierto de California.",
+      "tickets": [
+        { "name": "GA Pass", "price": "499€", "features": ["Acceso 3 días", "Parking incluido"] },
+        { "name": "VIP Pass", "price": "999€", "features": ["Acceso a Rose Garden", "Sombras exclusivas", "Bebidas especializadas"] }
+      ],
+      "lineup": [
+        { "id": "bad-bunny", "name": "Bad Bunny", "genre": "Reggaeton / Trap" },
+        { "id": "billie-eilish", "name": "Billie Eilish", "genre": "Pop" },
+        { "id": "the-weeknd", "name": "The Weeknd", "genre": "R&B / Pop" }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Bilbao BBK Live 2026",
+      "date": "09-11 Jul 2026",
+      "startDate": "2026-07-09",
+      "location": "Kobetamendi, Bilbao",
+      "price": "Desde 125€",
+      "description": "Música en la cima de la montaña con las mejores vistas de Bilbao.",
+      "tickets": [
+        { "name": "Abono + Camping", "price": "155€", "features": ["Bus lanzadera", "Acceso zona acampada", "Vistas al monte"] },
+        { "name": "Abono Estándar", "price": "125€", "features": ["Acceso 3 días", "Bus lanzadera incluido"] }
+      ],
+      "lineup": [
+        { "id": "red-hot-chili-peppers", "name": "Red Hot Chili Peppers", "genre": "Rock" },
+        { "id": "tame-impala", "name": "Tame Impala", "genre": "Psychedelic Rock" },
+        { "id": "quevedo", "name": "Quevedo", "genre": "Urbano" }
+      ]
+    }
+  ],
+  "grounds": [
+    { "id": 1, "name": "Escenario principal", "status": "Operativo", "capacity": 12000, "area": "Zona central" },
+    { "id": 2, "name": "Carpa electrónica", "status": "Operativo", "capacity": 6000, "area": "Zona norte" },
+    { "id": 3, "name": "Escenario alternativo", "status": "En montaje", "capacity": 4500, "area": "Zona este" },
+    { "id": 4, "name": "Zona food trucks", "status": "Operativo", "capacity": 2500, "area": "Anillo perimetral" },
+    { "id": 5, "name": "Accesos y colas", "status": "Operativo", "capacity": 8000, "area": "Entrada principal" },
+    { "id": 6, "name": "Backstage y staff", "status": "Solo staff", "capacity": 300, "area": "Zona restringida" }
+  ],
+  "artists": [
+    { "id": "bad-bunny", "name": "Bad Bunny", "genre": "Reggaeton / Trap", "description": "Cantante y compositor puertorriqueño, una de las figuras más influyentes de la música urbana actual.", "spotifyId": "4q3ewBCX7sLwd24euuV69X" },
+    { "id": "karol-g", "name": "Karol G", "genre": "Pop Urbano", "description": "Cantante colombiana de reguetón y pop urbano conocida por sus giras masivas y colaboraciones internacionales.", "spotifyId": "790FomKkXshlbRYZFtlgla" },
+    { "id": "quevedo", "name": "Quevedo", "genre": "Urbano", "description": "Cantante español de música urbana y reguetón que ha destacado por sus hits virales.", "spotifyId": "52iwsT98xCoGgiGntTiR7K" },
+    { "id": "bizarrap", "name": "Bizarrap", "genre": "Electrónica / Urbano", "description": "Productor argentino conocido por sus 'Music Sessions' con artistas de todo el mundo.", "spotifyId": "716NhGYqD1jl2wI1Qkgq36" },
+    { "id": "foo-fighters", "name": "Foo Fighters", "genre": "Rock Alternativo", "description": "Banda estadounidense de rock alternativo liderada por Dave Grohl, reconocida por sus potentes directos.", "spotifyId": "7jy3rLJdDQY21OgRLCZ9sD" },
+    { "id": "iron-maiden", "name": "Iron Maiden", "genre": "Heavy Metal", "description": "Histórica banda británica de heavy metal, referente del género desde los años 80.", "spotifyId": "6mdiAmATAx73kdxrNrnlao" },
+    { "id": "red-hot-chili-peppers", "name": "Red Hot Chili Peppers", "genre": "Rock", "description": "Banda estadounidense que fusiona rock, funk y otros estilos, con una larga trayectoria en festivales.", "spotifyId": "0L8ExT028jH3ddEcZwqJJ5" },
+    { "id": "billie-eilish", "name": "Billie Eilish", "genre": "Pop", "description": "Cantante y compositora estadounidense de pop alternativo, conocida por su sonido oscuro y experimental.", "spotifyId": "6qqNVTkY8uBg9cP3Jd7DAH" },
+    { "id": "tame-impala", "name": "Tame Impala", "genre": "Psychedelic Rock", "description": "Proyecto musical liderado por Kevin Parker que mezcla rock psicodélico con electrónica.", "spotifyId": "5INjqkS1o8h1imAzPqGZBb" },
+    { "id": "the-weeknd", "name": "The Weeknd", "genre": "R&B / Pop", "description": "Cantante y productor canadiense de R&B y pop, habitual en los principales festivales internacionales.", "spotifyId": "1Xyo4u8uXC1ZmMpatF05PJ" }
+  ],
+  "merchandising": [
+    { "id": 201, "name": "Camiseta ElectroBeach 2025", "type": "ropa", "price": 25.99, "description": "Camiseta oficial del festival, algodón 100%, diseño exclusivo." },
+    { "id": 202, "name": "Gorra Rock City", "type": "accesorio", "price": 18.50, "description": "Gorra negra con el logo bordado del festival." },
+    { "id": 203, "name": "Pack de pulseras LED", "type": "accesorio", "price": 12.00, "description": "Pack de 3 pulseras LED sincronizables con la música." },
+    { "id": 204, "name": "Mochila impermeable", "type": "accesorio", "price": 34.90, "description": "Mochila plegable ideal para festivales, resistente al agua." }
+  ],
+  "orderItems": [
+    { "id": 1, "name": "Entrada Subsonic 3 días", "category": "Abono general", "price": 49.99, "date": "2025-07-15" },
+    { "id": 2, "name": "Zona VIP Upgrade", "category": "Upgrade experiencia", "price": 290.50, "date": "2026-09-15" },
+    { "id": 3, "name": "Merch pack oficial", "category": "Merchandising", "price": 19.99, "date": "2026-03-04" }
+  ],
+  "history": [
+    { "id": 6, "title": "Boombastic Festival", "date": "2023-06-15", "location": "Madrid", "image": "https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg", "status": "completed", "rating": 4.5 },
+    { "id": 7, "title": "Rock in Rio", "date": "2023-09-10", "location": "Rio de Janeiro", "image": "https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg", "status": "completed", "rating": 4.0 },
+    { "id": 8, "title": "Lollapalooza", "date": "2023-08-20", "location": "Chicago", "image": "https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg", "status": "completed", "rating": 4.8 }
+  ]
+}
