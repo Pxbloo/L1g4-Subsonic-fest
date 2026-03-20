@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import BaseCard from '@/components/ui/BaseCard';
+import API_BASE_URL from '@/config/api';
 
 // --- 1. MÓDULO: INFORMACIÓN GENERAL ---
 const GeneralInfoForm = ({ data, onChange }) => (
@@ -86,11 +87,7 @@ const FestivalsManagement = () => {
     title: '', date: '', startDate: '', location: '', description: '', tickets: [], lineup: []
   });
 
-  const API_URL = 'http://localhost:3000';
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const API_URL = API_BASE_URL;
 
   const fetchData = async () => {
     try {
@@ -107,6 +104,11 @@ const FestivalsManagement = () => {
       console.error("Error cargando datos de la API:", err);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSave = async (e) => {
     e.preventDefault();

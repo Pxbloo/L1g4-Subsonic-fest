@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '@/config/api';
 
 const useBlog = () => {
   const [posts, setPosts] = useState([]);
@@ -10,7 +11,7 @@ const useBlog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/blogPosts');
+        const response = await fetch(`${API_BASE_URL}/blogPosts`);
         if (!response.ok) throw new Error('Error al cargar el blog');
         const data = await response.json();
         setPosts(data || []);
