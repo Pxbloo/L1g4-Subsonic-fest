@@ -1,8 +1,7 @@
-import react from 'react';
 import { Link } from 'react-router-dom';
 import BaseCard from './BaseCard';
 
-const GroundsCard = ({ id, name, description, image }) => {
+const GroundsCard = ({ id, name, image }) => {
     const imageUrl = image || "https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg";
 
     return (

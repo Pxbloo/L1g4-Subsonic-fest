@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import SocialLinks from '../components/ui/SocialLinks';
 import TicketModal from '../components/ui/TicketModal';
 import BaseCard from '../components/ui/BaseCard.jsx';
+import API_BASE_URL from '@/config/api';
 
 // --- COMPONENTES INTERNOS ---
 
@@ -40,7 +41,7 @@ const FestivalLineup = ({ lineup }) => (
   </section>
 );
 
-const FestivalTicketComparison = ({ tickets, onSelect }) => (
+const FestivalTicketComparison = ({ tickets }) => (
   <section className="animate-in fade-in duration-700">
     <h2 className="text-3xl font-black text-subsonic-accent uppercase mb-8 font-montserrat tracking-tight">
       Comparativa de Entradas
@@ -74,7 +75,7 @@ const FestivalInstance = () => {
   useEffect(() => {
     const fetchFestival = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/festivals/${id}`);
+        const response = await fetch(`${API_BASE_URL}/festivals/${id}`);
         if (!response.ok) {
           setFestival(null);
           return;

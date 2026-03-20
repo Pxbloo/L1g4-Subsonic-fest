@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ShopCard from "@/components/ui/ShopCard.jsx";
 import MerchCategoryBar from "@/components/layout/MerchBar.jsx";
 import PurchaseSummary from "@/components/ui/PurchaseSummary.jsx";
+import API_BASE_URL from '@/config/api';
 
 
 const parsePrice = (price) => Number(String(price).replace("€", "").replace(",", "."));
@@ -36,7 +37,7 @@ function Merch() {
     useEffect(() => {
         const fetchMerchandising = async () => {
             try {
-                const response = await fetch("http://localhost:3000/merchandising");
+                const response = await fetch(`${API_BASE_URL}/merchandising`);
                 if (!response.ok) throw new Error("Error al cargar merchandising");
 
                 const data = await response.json();

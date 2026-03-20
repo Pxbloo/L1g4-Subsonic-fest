@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import API_BASE_URL from '@/config/api';
 
 const useSalesDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -9,8 +10,8 @@ const useSalesDashboard = () => {
     const fetchData = async () => {
       try {
         const [festivalsRes, groundsRes] = await Promise.allSettled([
-          fetch('http://localhost:3000/festivals'),
-          fetch('http://localhost:3000/grounds'),
+          fetch(`${API_BASE_URL}/festivals`),
+          fetch(`${API_BASE_URL}/grounds`),
         ]);
 
         if (festivalsRes.status === 'fulfilled' && festivalsRes.value.ok) {
@@ -38,7 +39,7 @@ const useSalesDashboard = () => {
     return festivals.filter((festival) =>
       festival.title.toLowerCase().includes(term)
     );
-  }, [searchTerm]);
+  }, [searchTerm, festivals]);
 
   const filteredGrounds = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -46,7 +47,7 @@ const useSalesDashboard = () => {
     return grounds.filter((ground) =>
       ground.name.toLowerCase().includes(term)
     );
-  }, [searchTerm]);
+  }, [searchTerm, grounds]);
 
   const handleSearchChange = useCallback((value) => {
     setSearchTerm(value);

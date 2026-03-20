@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import BaseCard from '@/components/ui/BaseCard.jsx';
+import API_BASE_URL from '@/config/api';
 
 const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
   const [activeTab, setActiveTab] = useState(initialType);
@@ -52,7 +53,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
       try {
         console.log("Attempting login with:", { loginEmail, loginPassword });
 
-        const response = await fetch('http://localhost:3000/users');
+        const response = await fetch(`${API_BASE_URL}/users`);
         const users = await response.json();
 
         const user = users.find(
@@ -85,7 +86,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
   const handleRegister = async () => {
     try {
       const fullName = `${registerForm.name} ${registerForm.surname}`.trim();
-      const usersResponse = await fetch('http://localhost:3000/users');
+      const usersResponse = await fetch(`${API_BASE_URL}/users`);
       const users = await usersResponse.json();
       const existingUser = users.find(u => u.email === registerForm.email);
 
@@ -109,7 +110,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
         role: userType === 'provider' ? 'provider' : 'user',
       }
 
-      const response = await fetch('http://localhost:3000/users', {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

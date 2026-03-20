@@ -8,17 +8,17 @@ const menuItems = {
         {href: "/", label: "Inicio"},
         {href: "/tienda", label: "Tienda"},
         {href: "/blog", label: "Blog"},
-        {href: "/contacto", label: "Contacto"},
+        {href: "/contact", label: "Contacto"},
     ],
     provider: [
         {href: "/", label: "Inicio"},
         {href: "/recintos-proveedor", label: "Mis recintos"},
-        {href: "/dashboard-ventas", label: "Mis ventas"},
-        {href: "/contacto", label: "Contacto"},
+        {href: "/sales-dashboard", label: "Mis ventas"},
+        {href: "/contact", label: "Contacto"},
     ],
     admin: [
         {href: "/dashboard-festivales", label: "Gestión de festivales"},
-        {href: "/dashboard-recintos", label: "Gestión de recintos"},
+        {href: "/grounds", label: "Gestión de recintos"},
         {href: "/dashboard-usuarios", label: "Gestión de usuarios"},
         {href: "/dashboard-artistas", label: "Gestión de artistas"},
     ]
