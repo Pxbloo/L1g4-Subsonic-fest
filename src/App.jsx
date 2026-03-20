@@ -12,7 +12,8 @@ import History from '@/pages/History';
 import GroundsManagement from '@/pages/GroundsManagement.jsx';
 import Merch from '@/pages/Merch';
 import SalesDashboard from '@/pages/SalesDashboard.jsx';
-import UsersDashboard from "@/pages/UsersDashboard.jsx";
+import FestivalsManagement from '@/pages/FestivalsManagement';
+import Blog from '@/pages/Blog.jsx';
 
 function App() {
 
@@ -100,7 +101,8 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/grounds" element={<GroundsManagement />} />
             <Route path="/sales-dashboard" element={<SalesDashboard />} />
-            <Route path="/users-dashboard" element={<UsersDashboard />} />
+            <Route path="/dashboard-festivales" element={<FestivalsManagement />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes>
         </main>
 

@@ -18,9 +18,10 @@ const menuItems = {
     ],
     admin: [
         {href: "/", label: "Inicio"},
-        {href: "/grounds-admin-dashboard", label: "Gestión de recintos"},
-        {href: "/users-dashboard", label: "Gestión de usuarios"},
-        {href: "/artists-dashboard", label: "Gestión de artistas"},
+        {href: "/dashboard-festivales", label: "Gestión de festivales"},
+        {href: "/dashboard-recintos", label: "Gestión de recintos"},
+        {href: "/dashboard-usuarios", label: "Gestión de usuarios"},
+        {href: "/dashboard-artistas", label: "Gestión de artistas"},
     ]
 };
 
