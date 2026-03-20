@@ -3,7 +3,7 @@ const Input = ({ label, type = "text", placeholder, className = "", ...props }) 
     if (!labelText) return null;
     
     if (labelText.includes('*')) {
-      const [text, star] = labelText.split('*');
+      const [text] = labelText.split('*');
       return (
         <>
           {text}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import API_BASE_URL from '@/config/api';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import Home from '@/pages/Home';
@@ -15,6 +16,8 @@ import SalesDashboard from '@/pages/SalesDashboard.jsx';
 import FestivalsManagement from '@/pages/FestivalsManagement';
 import Blog from '@/pages/Blog.jsx';
 import UsersDashboard from "@/pages/UsersDashboard.jsx";
+import ContactUs from "@/pages/ContactUs.jsx";
+import TicketsManagement from "@/pages/TicketsManagement.jsx";
 
 function App() {
 
@@ -23,7 +26,7 @@ function App() {
 
   const checkUserExists = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/${userId}`);
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`);
       return response.ok;
     }
     catch (error) {
@@ -99,12 +102,13 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/festival/:id" element={<FestivalInstance />} />
             <Route path="/artist/:id" element={<ArtistProfile />} />
-            <Route path="/history" element={<History />} />
             <Route path="/grounds" element={<GroundsManagement />} />
             <Route path="/sales-dashboard" element={<SalesDashboard />} />
             <Route path="/dashboard-festivales" element={<FestivalsManagement />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/dashboard-usuarios" element={<UsersDashboard />} />
+            <Route path="/dashboard-entradas" element={<TicketsManagement />} />
+            <Route path="/contact" element={<ContactUs />} />
           </Routes>
         </main>
 

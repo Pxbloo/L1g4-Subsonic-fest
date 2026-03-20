@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import Button from "@/components/ui/Button"; 
 import SocialLinks from "@/components/ui/SocialLinks"; 
 import BaseCard from "@/components/ui/BaseCard.jsx";
+import API_BASE_URL from '@/config/api';
 
 const ArtistProfile = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const ArtistProfile = () => {
   useEffect(() => {
     const fetchArtist = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/artists/${id}`);
+        const response = await fetch(`${API_BASE_URL}/artists/${id}`);
         if (!response.ok) {
           setArtist(null);
           return;
