@@ -15,6 +15,7 @@ import SalesDashboard from '@/pages/SalesDashboard.jsx';
 import FestivalsManagement from '@/pages/FestivalsManagement';
 import Blog from '@/pages/Blog.jsx';
 import UsersDashboard from "@/pages/UsersDashboard.jsx";
+import ContactUs from "@/pages/ContactUs.jsx";
 
 function App() {
 
@@ -99,12 +100,12 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/festival/:id" element={<FestivalInstance />} />
             <Route path="/artist/:id" element={<ArtistProfile />} />
-            <Route path="/history" element={<History />} />
             <Route path="/grounds" element={<GroundsManagement />} />
             <Route path="/sales-dashboard" element={<SalesDashboard />} />
             <Route path="/dashboard-festivales" element={<FestivalsManagement />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/dashboard-usuarios" element={<UsersDashboard />} />
+            <Route path="/contact" element={<ContactUs />} />
           </Routes>
         </main>
 
