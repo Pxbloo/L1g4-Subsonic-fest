@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Hero from '../components/ui/Hero'; 
 import FestivalGrid from '../components/ui/FestivalGrid';
+import API_BASE_URL from '@/config/api';
 
 const Home = () => {
   const [festivals, setFestivals] = useState([]);
@@ -9,10 +10,8 @@ const Home = () => {
   useEffect(() => {
     const fetchFestivals = async () => {
       try {
-        const response = await fetch('http://localhost:3000/festivals');
-        
-        if (!response.ok) throw new Error(`Error ${response.status}: No se pudo conectar con el servidor`);
-        
+        const response = await fetch(`${API_BASE_URL}/festivals`);
+        if (!response.ok) throw new Error('Error al cargar festivales');
         const data = await response.json();
         console.log("Festivales recibidos de la DB:", data); 
         setFestivals(data || []);

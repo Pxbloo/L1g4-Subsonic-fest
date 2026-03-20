@@ -5,6 +5,7 @@ import Input from '@/components/ui/Input';
 import PageHeader from '@/components/ui/PageHeader';
 import groundImage from '@/assets/images/Ground.jpg';
 import SearchIcon from '@/assets/icons/search.svg';
+import API_BASE_URL from '@/config/api';
 
 const GroundsManagement = () => {
   const [grounds, setGrounds] = useState([]);
@@ -32,7 +33,7 @@ const GroundsManagement = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/grounds');
+        const response = await fetch(`${API_BASE_URL}/grounds`);
         if (!response.ok) throw new Error('Error al cargar recintos');
         const data = await response.json();
         setGrounds(data || []);

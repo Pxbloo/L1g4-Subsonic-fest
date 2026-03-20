@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import BaseCard from '@/components/ui/BaseCard.jsx';
 import Button from '@/components/ui/Button';
 import groundImage from '@/assets/images/Ground.jpg';
+import API_BASE_URL from '@/config/api';
 
 const GroundInstance = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const GroundInstance = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/grounds');
+        const response = await fetch(`${API_BASE_URL}/grounds`);
         if (!response.ok) throw new Error('Error al cargar recintos');
         const data = await response.json();
         setGrounds(data || []);

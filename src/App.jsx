@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import API_BASE_URL from '@/config/api';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import Home from '@/pages/Home';
@@ -25,7 +26,7 @@ function App() {
 
   const checkUserExists = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/${userId}`);
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`);
       return response.ok;
     }
     catch (error) {

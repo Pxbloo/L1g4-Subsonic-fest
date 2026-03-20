@@ -3,6 +3,7 @@ import AvatarPicker from '../components/ui/AvatarPicker.jsx';
 import ProfileForm from "@/components/ui/ProfileForm.jsx";
 import RecentPurchases from "@/components/ui/RecentPurchases.jsx";
 import BaseCard from "@/components/ui/BaseCard.jsx";
+import API_BASE_URL from '@/config/api';
 
 const UserProfile = ({user}) => {
 
@@ -33,7 +34,7 @@ const UserProfile = ({user}) => {
     useEffect(() => {
         const fetchOrderItems = async () => {
             try {
-                const response = await fetch('http://localhost:3000/orderItems');
+                const response = await fetch(`${API_BASE_URL}/orderItems`);
                 if (!response.ok) throw new Error('Error al cargar pedidos');
                 const data = await response.json();
                 setOrderItems(data || []);
@@ -63,7 +64,7 @@ const UserProfile = ({user}) => {
             status: index === 0 ? "Completado" : index === 1 ? "En progreso" : "Pendiente",
             category: item.category
         }));
-    }, []);
+    }, [orderItems]);
 
     const handleAvatarChange = (nextUrl) => {
         setProfile((prev) => ({ ...prev, avatarUrl: nextUrl }));
@@ -83,7 +84,7 @@ const UserProfile = ({user}) => {
                 },
             };
 
-            const response = await fetch(`http://localhost:3000/users/${profile.id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/${profile.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

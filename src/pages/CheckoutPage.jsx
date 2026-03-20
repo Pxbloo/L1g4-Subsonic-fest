@@ -3,6 +3,7 @@ import PaymentForm from '@/components/ui/PaymentForm';
 import { useCheckout } from '@/hooks/useCheckout';
 import Button from '@/components/ui/Button';
 import BaseCard from '@/components/ui/BaseCard.jsx';
+import API_BASE_URL from '@/config/api';
 
 const CheckoutPage = () => {
     const { handlePayment, loading, error, completed } = useCheckout();
@@ -11,7 +12,7 @@ const CheckoutPage = () => {
     useEffect(() => {
         const fetchOrderItems = async () => {
             try {
-                const response = await fetch('http://localhost:3000/orderItems');
+                const response = await fetch(`${API_BASE_URL}/orderItems`);
                 if (!response.ok) throw new Error('Error al cargar pedidos');
                 const data = await response.json();
                 setOrderItems(data || []);

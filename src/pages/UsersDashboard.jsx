@@ -3,6 +3,7 @@ import UserModal from "@/components/ui/UserModal.jsx"
 import ConfirmDialog from "@/components/ui/ConfirmDialog.jsx";
 import Button from "@/components/ui/Button.jsx";
 import SearchBar from "@/components/ui/SearchBar.jsx";
+import API_BASE_URL from '@/config/api';
 
 
 const UsersDashboard = () => {
@@ -17,7 +18,7 @@ const UsersDashboard = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/users');
+            const response = await fetch(`${API_BASE_URL}/users`);
 
             if (!response.ok) {
                 console.error('Failed to fetch users:', response.statusText);
@@ -67,7 +68,7 @@ const UsersDashboard = () => {
     const handleSaveUser = async (userData) => {
         try {
             if (selectedUser) {
-                const response = await fetch(`http://localhost:3000/users/${selectedUser.id}`, {
+                const response = await fetch(`${API_BASE_URL}/users/${selectedUser.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -79,7 +80,7 @@ const UsersDashboard = () => {
                 }
             }
             else {
-                const response = await fetch('http://localhost:3000/users', {
+                const response = await fetch(`${API_BASE_URL}/users`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ const UsersDashboard = () => {
     const handleDeleteUser = async () => {
         if (!confirmDelete) return;
         try {
-            const response = await fetch(`http://localhost:3000/users/${selectedUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/${selectedUser.id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {

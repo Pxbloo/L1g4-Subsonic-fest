@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import API_BASE_URL from '@/config/api';
 
 export const useHistory = () => {
     const [data, setData] = useState(null);
@@ -8,8 +9,8 @@ export const useHistory = () => {
         const fetchHistory = async () => {
             try {
                 const [historyRes, merchRes] = await Promise.all([
-                    fetch('http://localhost:3000/history'),
-                    fetch('http://localhost:3000/merchandising'),
+                    fetch(`${API_BASE_URL}/history`),
+                    fetch(`${API_BASE_URL}/merchandising`),
                 ]);
 
                 const history = historyRes.ok ? await historyRes.json() : [];
