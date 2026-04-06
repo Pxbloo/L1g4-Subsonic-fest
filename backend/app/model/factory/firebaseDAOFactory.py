@@ -1,13 +1,16 @@
 from .interfaceDAOFactory import InterfaceDAOFactory
 from ..dao.firebase.firebase_festival_dao import FirebaseFestivalDAO
 
+
 class FirebaseDAOFactory(InterfaceDAOFactory):
 
-    def __init__(self, cred_path: str):
-        self.cred_path = cred_path
+    def __init__(self) -> None:
+        # La configuración de credenciales la gestiona FirebaseConnector
+        # (FIREBASE_CREDENTIALS o serviceAccountKey.json por defecto)
+        pass
 
     def get_festival_dao(self) -> FirebaseFestivalDAO:
-        return FirebaseFestivalDAO(self.cred_path)
+        return FirebaseFestivalDAO()
 
     def get_user_dao(self):
         raise NotImplementedError
