@@ -1,13 +1,14 @@
 from typing import List, Optional
 from app.model.dao.interfaces.user_dao import UserDAO
 from app.model.dto.UserDTO import UserDTO
-from .firebase_connector import FirebaseConnector # Todavia no se ha implementado el conector
+from .firebase_connector import FirebaseConnector
+
 
 class FirebaseUserDAO(UserDAO):
 
     def __init__(self):
         """Inicializa la conexión a Firebase Firestore y establece la referencia a la colección 'users'."""
-        self.db = FirebaseConnector().get_db()
+        self.db = FirebaseConnector.get_db()
         self.collection = self.db.collection("users")
 
     def get_all(self) -> List[UserDTO]:
@@ -30,11 +31,21 @@ class FirebaseUserDAO(UserDAO):
     def update(self, user_id: str, user: UserDTO) -> bool:
         """Actualiza un documento existente identificado por su ID con los nuevos datos proporcionados por el objeto UserDTO. 
         Si el documento existe, se actualiza con los nuevos datos; de lo contrario, se devuelve False."""
-        self.collection.document(user_id).update(user.model_dump())
+        doc_ref = self.collection.document(user_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        doc_ref.update(user.model_dump())
         return True
 
     def delete(self, user_id: str) -> bool:
         """Elimina permanentemente el documento del usuario especificado por su ID. 
         Si el documento existe, se elimina; de lo contrario, se devuelve False."""
-        self.collection.document(user_id).delete()
+        doc_ref = self.collection.document(user_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return False
+
+        doc_ref.delete()
         return True
