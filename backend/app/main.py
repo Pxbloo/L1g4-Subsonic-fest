@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from model.model import SubsonicModel
+from .model.model import SubsonicModel
 
 app = FastAPI()
 model = SubsonicModel()

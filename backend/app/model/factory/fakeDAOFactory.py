@@ -1,10 +1,15 @@
-from model.factory.interfaceDAOFactory import InterfaceDAOFacrtory
-from model.dao.fake.fake_festival_dao import FakeFestivalDAO
+from .interfaceDAOFactory import InterfaceDAOFactory
+from ..dao.fake.fake_festival_dao import FakeFestivalDAO
 
-class FakeDAoFactory(InterfaceDAOFacrtory):
-    """Fábrica de DAOs falsos para pruebas y desarrollo."""
 
-    def __init__(self, db_path: str = "../../../../frontend/src/data/db.json"):
+class FakeDAOFactory(InterfaceDAOFactory):
+    """Fábrica de DAOs falsos para pruebas y desarrollo.
+
+    Si no se proporciona db_path, cada DAO usará su ruta por defecto
+    (db.json del frontend).
+    """
+
+    def __init__(self, db_path: str | None = None):
         self.db_path = db_path
 
     def get_user_dao(self):
@@ -21,4 +26,5 @@ class FakeDAoFactory(InterfaceDAOFacrtory):
         raise NotImplementedError("Fake MerchandisingDAO no implementado")
 
     def get_festival_dao(self) -> FakeFestivalDAO:
+        # Si self.db_path es None, FakeFestivalDAO usará su DEFAULT_DB_PATH
         return FakeFestivalDAO(self.db_path)

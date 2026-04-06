@@ -1,7 +1,7 @@
-from model.factory.interfaceDAOFactory import InterfaceDAOFacrtory
-from model.dao.firebase.firebase_festival_dao import FirebaseFestivalDAO
+from .interfaceDAOFactory import InterfaceDAOFactory
+from ..dao.firebase.firebase_festival_dao import FirebaseFestivalDAO
 
-class FirebaseDAOFactory(InterfaceDAOFacrtory):
+class FirebaseDAOFactory(InterfaceDAOFactory):
 
     def __init__(self, cred_path: str):
         self.cred_path = cred_path

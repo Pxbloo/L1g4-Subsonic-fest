@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from model.dto.HistoryDTO import HistoryDTO
+from ...dto.HistoryDTO import HistoryDTO
 
 class HistoryDAO(ABC):
     """Interfaz para consultar el historial de asistencia."""

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from model.dto.BlogPostDTO import BlogPostDTO
+from ...dto.BlogPostDTO import BlogPostDTO
 
 class BlogPostDAO(ABC):
     """Interfaz para la gestión de artículos del blog."""

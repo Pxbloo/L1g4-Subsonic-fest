@@ -1,9 +1,9 @@
-from model.factory.fakeDAOFactory import FakeDAOFactory
+from .factory.fakeDAOFactory import FakeDAOFactory
 
 class SubsonicModel:
     def __init__(self):
         # Aqui se elige que fábrica usar
-        self.factory = FakeDAOFactory("db.json")
+        self.factory = FakeDAOFactory()
 
     def listar_festivales(self):
         dao = self.factory.get_festival_dao()

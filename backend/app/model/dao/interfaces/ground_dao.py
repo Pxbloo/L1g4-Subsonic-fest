@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from model.dto.GroundDTO import GroundDTO
+from ...dto.GroundDTO import GroundDTO
 
 class GroundDAO(ABC):
     """Interfaz para la gestión de zonas y escenarios del recinto."""
