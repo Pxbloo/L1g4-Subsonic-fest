@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from typing import List, Optional
-from model.dto.FestivalDTO import FestivalDTO
-from model.dao.interfaces.festival_dao import FestivalDAO
+from ...dto.FestivalDTO import FestivalDTO
+from ..interfaces.festival_dao import FestivalDAO
 
 ## SOlo prueba con festivales, no se ha implementado el resto de DAOs, 
 # pues el objetivo es pasar a firebase

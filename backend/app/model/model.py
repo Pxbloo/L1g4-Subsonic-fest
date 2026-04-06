@@ -1,9 +1,16 @@
-from model.factory.fakeDAOFactory import FakeDAOFactory
+import os
+
+from .factory.fakeDAOFactory import FakeDAOFactory
+from .factory.firebaseDAOFactory import FirebaseDAOFactory
 
 class SubsonicModel:
     def __init__(self):
-        # Aqui se elige que fábrica usar
-        self.factory = FakeDAOFactory("db.json")
+        backend = os.getenv("DATA_BACKEND", "fake").lower()
+
+        if backend == "firebase":
+            self.factory = FirebaseDAOFactory()
+        else:
+            self.factory = FakeDAOFactory()
 
     def listar_festivales(self):
         dao = self.factory.get_festival_dao()

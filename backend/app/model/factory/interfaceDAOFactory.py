@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
-from model.dao.interfaces.user_dao import UserDAO
-from model.dao.interfaces.artist_dao import ArtistDAO
-from model.dao.interfaces.blog_post_dao import BlogPostDAO
-from model.dao.interfaces.festival_dao import FestivalDAO
-from model.dao.interfaces.ground_dao import GroundDAO
-from model.dao.interfaces.history_dao import HistoryDAO
-from model.dao.interfaces.merchandising_dao import MerchandisingDAO
+from ..dao.interfaces.user_dao import UserDAO
+from ..dao.interfaces.artist_dao import ArtistDAO
+from ..dao.interfaces.blog_post_dao import BlogPostDAO
+from ..dao.interfaces.festival_dao import FestivalDAO
+from ..dao.interfaces.ground_dao import GroundDAO
+from ..dao.interfaces.history_dao import HistoryDAO
+from ..dao.interfaces.merchandising_dao import MerchandisingDAO
 
-class InterfaceDAOFacrtory(ABC):
+class InterfaceDAOFactory(ABC):
     """Fábrica de interfaces DAO para la gestión de datos en la aplicación."""
 
     @abstractmethod

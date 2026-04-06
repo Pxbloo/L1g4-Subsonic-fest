@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from model.dto.FestivalDTO import FestivalDTO
+from ...dto.FestivalDTO import FestivalDTO
 
 
 class FestivalDAO(ABC):

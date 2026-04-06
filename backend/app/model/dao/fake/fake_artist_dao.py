@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from typing import List, Optional
-from model.dto.ArtistDTO import ArtistDTO
-from model.dao.interfaces.artist_dao import ArtistDAO
+from ...dto.ArtistDTO import ArtistDTO
+from ..interfaces.artist_dao import ArtistDAO
 
 PROJECT_ROOT = Path(__file__).resolve().parents[5]
 DEFAULT_DB_PATH = PROJECT_ROOT / "frontend" / "src" / "data" / "db.json"

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from model.dto.MerchandisingDTO import MerchandisingDTO
+from ...dto.MerchandisingDTO import MerchandisingDTO
 
 class MerchandisingDAO(ABC):
     """Interfaz para la gestión de productos de merchandising."""
