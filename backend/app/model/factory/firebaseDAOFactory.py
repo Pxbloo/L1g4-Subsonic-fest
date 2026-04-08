@@ -5,7 +5,7 @@ from ..dao.firebase.firebase_artist_dao import FirebaseArtistDAO
 from ..dao.firebase.firebase_blog_dao import FirebaseBlogDAO
 from ..dao.firebase.firebase_grounds_dao import FirebaseGroundDAO
 from ..dao.firebase.firebase_history_dao import FirebaseHistoryDAO
-from ..dao.firebase.firebase_merchandising_dao import FirebaseMerchansidingDAO
+from ..dao.firebase.firebase_merchandising_dao import FirebaseMerchandisingDAO
 
 
 class FirebaseDAOFactory(InterfaceDAOFactory):
@@ -28,5 +28,5 @@ class FirebaseDAOFactory(InterfaceDAOFactory):
     def get_history_dao(self) -> FirebaseHistoryDAO:
         return FirebaseHistoryDAO()
 
-    def get_merchandising_dao(self):
-        return FirebaseMerchansidingDAO()
+    def get_merchandising_dao(self) -> FirebaseMerchandisingDAO:
+        return FirebaseMerchandisingDAO()

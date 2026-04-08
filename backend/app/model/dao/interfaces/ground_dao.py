@@ -3,8 +3,6 @@ from typing import List, Optional
 from ...dto.GroundDTO import GroundDTO
 
 class GroundDAO(ABC):
-    """Interfaz para la gestión de zonas y escenarios del recinto."""
-
     @abstractmethod
     def get_all(self) -> List[GroundDTO]:
         pass
@@ -14,6 +12,13 @@ class GroundDAO(ABC):
         pass
 
     @abstractmethod
-    def update_status(self, ground_id: str, new_status: str) -> bool:
-        """Método específico para cambiar el estado (Operativo/En montaje) de una zona."""
+    def create(self, ground: GroundDTO) -> bool:
+        pass
+
+    @abstractmethod
+    def update(self, ground_id: str, ground: GroundDTO) -> bool:
+        pass
+
+    @abstractmethod
+    def delete(self, ground_id: str) -> bool:
         pass
