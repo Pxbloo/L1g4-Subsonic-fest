@@ -35,7 +35,7 @@ class FirebaseMerchandisingDAO(MerchandisingDAO):
             return False
 
         doc_ref.update(merchandising_item.model_dump())
-            return True
+        return True
 
     def delete(self, merchandising_id: str) -> bool:
         """Elimina permanentemente el documento de la tienda especificado por su ID."""
@@ -45,4 +45,4 @@ class FirebaseMerchandisingDAO(MerchandisingDAO):
             return False
 
         doc_ref.delete()
-            return True
+        return True
