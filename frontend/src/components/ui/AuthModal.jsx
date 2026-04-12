@@ -5,6 +5,7 @@ import BaseCard from '@/components/ui/BaseCard.jsx';
 import API_BASE_URL from '@/config/api';
 import { signInWithPopup } from "firebase/auth"; 
 import { auth, googleProvider } from '@/config/firebase';
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
   const [activeTab, setActiveTab] = useState(initialType);
@@ -29,7 +30,6 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
     }
   }, [initialType]);
 
-  // --- LÓGICA DE GOOGLE LOGIN ---
   const handleGoogleLogin = async () => {
     setErrorMessage('');
     try {
@@ -38,7 +38,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
       // 2. Obtener el token (JWT)
       const token = await result.user.getIdToken();
       
-      // 3. Verificar contra tu backend
+      // 3. Verificar contra la backend
       const response = await fetch(`${API_BASE_URL}/auth/verify`, {
         method: "GET",
         headers: {
@@ -57,17 +57,88 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
       }
     } catch (error) {
       console.error("Error en el login de Google:", error);
-      setErrorMessage("No se pudo completar el inicio de sesión con Google.");
+      setErrorMessage("No se pudo completar el login con Google.");
     }
   };
 
-  function validateResponse(response) {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error("Network response was not ok.");
+  // --- LÓGICA: LOGIN CON EMAIL ---
+  const handleEmailLogin = async () => {
+    try {
+      // 1. Validar en Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      const token = await userCredential.user.getIdToken();
+
+      // 2. Verificar token y obtener datos en el backend
+      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        onLoginSuccess(userData);
+        onClose();
+      } else {
+        setErrorMessage("Error de verificación en el servidor.");
+      }
+    } catch (error) {
+      console.error("Login error:", error.code);
+      setErrorMessage("Email o contraseña incorrectos.");
     }
-  }
+  };
+
+  const handleRegister = async () => {
+    try {
+      setErrorMessage('');
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        registerForm.email,
+        registerForm.password
+      );
+
+      const uid = userCredential.user.uid;
+      const fullName = `${registerForm.name} ${registerForm.surname}`.trim();
+
+      const newUser = {
+        uid: uid,
+        name: fullName,
+        email: registerForm.email,
+        password: registerForm.password,
+        phone: registerForm.phone || '',
+        avatar: '',
+        address: {
+          country: '',
+          city: '',
+          street: '',
+          postalCode: '',
+        }
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!response.ok) {
+        onLoginSuccess(newUser);
+        onClose();
+      }
+    }
+    catch (error) {
+      console.error("Error en registro:", error);
+      if (error.code === 'auth/email-already-in-use') {
+        setErrorMessage("El correo ya está registrado. Intenta iniciar sesión.");
+      } else {
+        setErrorMessage("Error al registrar el usuario.");
+      }
+    }
+  };
 
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
@@ -116,56 +187,6 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
       await handleRegister();
     }
   };
-
-  const handleRegister = async () => {
-    try {
-      const fullName = `${registerForm.name} ${registerForm.surname}`.trim();
-      const usersResponse = await fetch(`${API_BASE_URL}/users`);
-      const users = await usersResponse.json();
-      const existingUser = users.find(u => u.email === registerForm.email);
-
-      if (existingUser) {
-        setErrorMessage("Ya existe un usuario registrado con ese correo.");
-        return;
-      }
-
-      const newUser = {
-        name: fullName,
-        email: registerForm.email,
-        password: registerForm.password,
-        phone: registerForm.phone || '',
-        avatar: '',
-        address: {
-          country: '',
-          city: '',
-          street: '',
-          postalCode: '',
-        },
-        role: userType === 'provider' ? 'provider' : 'user',
-      }
-
-      const response = await fetch(`${API_BASE_URL}/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUser),
-      });
-
-      const createdUser = await validateResponse(response);
-      const savedUser = { ...createdUser };
-      delete savedUser.password;
-
-      onLoginSuccess(savedUser);
-      onClose();
-    }
-    catch (error) {
-      console.error("Error registering user:", error);
-      setErrorMessage("Error al registrar el usuario.");
-      return;
-    }
-    onClose();
-  }
 
   if (!isOpen) return null;
 
