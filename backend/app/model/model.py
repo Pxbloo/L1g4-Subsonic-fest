@@ -6,7 +6,7 @@ from .dto.UserDTO import UserDTO, AddressDTO
 
 class SubsonicModel:
     def __init__(self):
-        backend = os.getenv("DATA_BACKEND", "fake").lower()
+        backend = os.getenv("DATA_BACKEND", "firebase").lower()
         if backend == "firebase":
             self.factory = FirebaseDAOFactory()
             self.connector = FirebaseConnector()
