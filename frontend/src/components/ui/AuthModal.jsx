@@ -4,6 +4,7 @@ import Input from '@/components/ui/Input';
 import BaseCard from '@/components/ui/BaseCard.jsx';
 import API_BASE_URL from '@/config/api';
 import { signInWithPopup } from "firebase/auth"; 
+import { auth, googleProvider } from "../../config/firebase";
 
 const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
   const [activeTab, setActiveTab] = useState(initialType);
@@ -217,7 +218,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
               </div>
               <Button type="submit" variant="primary" className="w-full py-4 text-base">Entrar</Button>
             </form>
-
+            
             <div className="relative flex items-center py-2">
               <div className="flex-grow border-t border-subsonic-border"></div>
               <span className="flex-shrink mx-4 text-[10px] text-subsonic-muted uppercase tracking-widest">O continúa con</span>
