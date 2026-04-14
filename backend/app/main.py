@@ -146,8 +146,10 @@ async def get_user(user_id: str):
     return user
 
 @app.put("/api/users/{user_id}")
-async def update_user(user_id: str, user: UserDTO):
+async def update_user(user_id: str, user: UserDTO, current_user: UserDTO = Depends(get_current_user)):
     """Endpoint protegido para actualizar un usuario específico."""
+    if current_user.role != "admin" and current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Permiso denegado")
     existing_user = model.listar_usuario_por_id(user_id)
     if not existing_user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
@@ -242,6 +244,20 @@ async def get_grounds():
     grounds = model.listar_grounds()
     return grounds
 
+@app.post("/api/grounds")
+async def create_ground(ground: GroundDTO, current_user: UserDTO = Depends(get_current_user)):
+    if current_user.role not in ["admin", "provider"]:
+        raise HTTPException(status_code=403, detail="Solo administradores o proveedores pueden crear recintos")
+    success = model.crear_recinto(ground)
+    return ground
+
+@app.delete("/api/grounds/{ground_id}")
+async def delete_ground(ground_id: str, current_user: UserDTO = Depends(get_current_user)):
+    if current_user.role not in ["admin", "provider"]:
+        raise HTTPException(status_code=403, detail="Solo administradores o proveedores pueden eliminar recintos")
+    model.eliminar_recinto(ground_id)
+    return {"detail": "Recinto eliminado"}
+
 # Endpoints de blogs
 @app.get("/api/blogPosts")
 async def get_blog_posts():
@@ -284,6 +300,13 @@ async def update_blog_post(post_id: str, post: BlogPostDTO, current_user: UserDT
         raise HTTPException(status_code=400, detail="Error al actualizar la entrada del blog")
     return post
 
+@app.delete("/api/blogPosts/{post_id}")
+async def delete_blog_post(post_id: str, current_user: UserDTO = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Permiso denegado")
+    model.eliminar_blog_post(post_id)
+    return {"detail": "Entrada de blog eliminada"}
+
 # Endpoints de historial
 @app.get("/api/history")
 async def get_history(current_user: UserDTO = Depends(get_current_user)):
@@ -324,3 +347,10 @@ async def update_merchandising(product_id: str, product: MerchandisingDTO, curre
     if not success:
         raise HTTPException(status_code=400, detail="Error al actualizar el producto de merchandising")
     return product
+
+@app.delete("/api/merchandising/{product_id}")
+async def delete_merchandising(product_id: str, current_user: UserDTO = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Permiso denegado")
+    model.eliminar_merchandising(product_id)
+    return {"detail": "Producto eliminado"}
