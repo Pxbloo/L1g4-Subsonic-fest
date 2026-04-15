@@ -16,7 +16,7 @@ class SubsonicModel:
             self.connector = None
 
     # === Autenticación / Sesión ===
-    def verificar_token_oauth(self, token: str):
+    async def verificar_token_oauth(self, token: str):
         """Valida el token recibido del frontend y devuelve un UserDTO.
 
         Si el usuario no existe en la base de datos, lo crea con rol "user".
@@ -24,7 +24,7 @@ class SubsonicModel:
         if not self.connector:
             return None
 
-        user_info = self.connector.verify_token(token)
+        user_info = await self.connector.verify_token(token)
 
         if not user_info:
             return None

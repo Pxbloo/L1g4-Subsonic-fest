@@ -24,7 +24,7 @@ app.add_middleware(
 model = SubsonicModel()
 
 
-def get_current_user(authorization: Optional[str] = Header(None)) -> UserDTO:
+async def get_current_user(authorization: Optional[str] = Header(None)) -> UserDTO:
     """Dependencia reutilizable para obtener el usuario autenticado.
 
     Valida el header Authorization: Bearer <token> usando el modelo de dominio.
@@ -40,7 +40,7 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> UserDTO:
     if scheme.lower() != "bearer" or not token:
         raise HTTPException(status_code=401, detail="Formato de token inválido")
 
-    user = model.verificar_token_oauth(token)
+    user = await model.verificar_token_oauth(token)
     if not user:
         raise HTTPException(status_code=401, detail="Token inválido o usuario no encontrado")
 
@@ -59,7 +59,7 @@ async def verify_user(authorization: Optional[str] = Header(None)):
         token = authorization.split(" ")[1]
     except IndexError:
         raise HTTPException(status_code=401, detail="Formato de token inválido")
-    user = model.verificar_token_oauth(token)
+    user = await model.verificar_token_oauth(token)
 
     if not user:
         raise HTTPException(status_code=401, detail="Token inválido o usuario no encontrado")
