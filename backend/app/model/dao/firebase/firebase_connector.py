@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -45,15 +46,19 @@ class FirebaseConnector:
             return Path(env_path)
 
         return Path(__file__).resolve().parents[4] / "serviceAccountKey.json"
-    
-    def verify_token(self, token: str):
+
+
+    async def verify_token(self, token: str):
         """
         Se comunica con los servidores de Google para validar el ID Token.
         Retorna un diccionario con la información del usuario (uid, email, etc.)
         """
-        try:
-            decoded_token = auth.verify_id_token(token)
-            return decoded_token
-        except Exception as e:
-            print(f"Error al verificar el token de OAuth: {e}")
-            return None
+        for _ in range(3): # Se intenta verificar el token varias veces para evitar problemas de sincronización
+            try:
+                decoded_token = auth.verify_id_token(token, clock_skew_seconds=3)
+                return decoded_token
+            except Exception as e:
+                time.sleep(0.3)
+                print(f"Error al verificar el token de OAuth tras varios intentos: {e}")
+                return None
+        return None
