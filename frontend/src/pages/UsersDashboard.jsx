@@ -4,7 +4,7 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog.jsx";
 import Button from "@/components/ui/Button.jsx";
 import SearchBar from "@/components/ui/SearchBar.jsx";
 import API_BASE_URL from '@/config/api';
-import {getAuth} from "firebase/auth";
+import {createUserWithEmailAndPassword, getAuth} from "firebase/auth";
 
 
 const UsersDashboard = () => {
@@ -77,51 +77,69 @@ const UsersDashboard = () => {
 
             const token = await currentUser.getIdToken();
 
-            if (selectedUser) {
-                const response = await fetch(`${API_BASE_URL}/users/${selectedUser.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(userData)
-                });
-                if (!response.ok) {
-                    console.error('Failed to update user:', response.statusText);
-                }
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                userData.email,
+                userData.password
+            );
+
+            const uid = userCredential.user.uid;
+
+            const payload = {
+                ...userData,
+                id: userData.id?.trim() || uid,
+                ...(userData.password?.trim() ? { password: userData.password } : {}), // TODO revisar para evitar subir la contraseña a firebase
+            };
+
+            const url = selectedUser
+                ? `${API_BASE_URL}/users/${selectedUser.id}`
+                : `${API_BASE_URL}/users`;
+
+            const method = selectedUser ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Request failed: ${response.status} ${errorText}`);
             }
-            else {
-                const response = await fetch(`${API_BASE_URL}/users`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(userData)
-                });
-                if (!response.ok) {
-                    console.error('Failed to create user:', response.statusText);
-                }
-            }
-        }
-        catch (error) {
-            console.error('Error saving user:', error);
-        }
-        finally {
+
             setModalOpen(false);
+            setSelectedUser(null);
             await fetchUsers();
+        } catch (error) {
+            console.error('Error saving user:', error);
         }
     };
 
-    const handleDeleteUser = async () => {
-        if (!confirmDelete) return;
+    const handleDeleteUser = async (user) => {
+        if (!confirmDelete || !user) return;
         try {
-            const response = await fetch(`${API_BASE_URL}/users/${selectedUser.id}`, {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error('No user is currently logged in or user is not authenticated.');
+            }
+
+            const token = await currentUser.getIdToken();
+            const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
                 method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
             if (!response.ok) {
                 console.error('Failed to delete user:', response.statusText);
             }
+            setConfirmDelete(null);
             await fetchUsers();
         }
         catch (error) {
@@ -197,7 +215,7 @@ const UsersDashboard = () => {
                                             Editar
                                         </Button>
                                         <Button
-                                            onClick={() => setConfirmDelete({ id: user.id, name: user.name })}
+                                            onClick={() => setConfirmDelete(user)}
                                             className="bg-subsonic-border text-red-400 hover:bg-red-500 hover:text-subsonic-bg px-6 py-2"
                                             variant=''
                                         >
@@ -233,6 +251,7 @@ const UsersDashboard = () => {
                 onConfirm={handleDeleteUser}
                 title="Eliminar usuario"
                 message={`¿Estás seguro de que deseas eliminar a "${confirmDelete?.name}"? Esta acción no se puede deshacer.`}
+                user={confirmDelete}
             />
         </div>
     );
