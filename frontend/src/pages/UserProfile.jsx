@@ -4,6 +4,7 @@ import ProfileForm from "@/components/ui/ProfileForm.jsx";
 import RecentPurchases from "@/components/ui/RecentPurchases.jsx";
 import BaseCard from "@/components/ui/BaseCard.jsx";
 import API_BASE_URL from '@/config/api';
+import {getAuth} from "firebase/auth";
 
 const UserProfile = ({user}) => {
 
@@ -51,6 +52,8 @@ const UserProfile = ({user}) => {
         if (response.ok) {
             return response.json();
         } else {
+            const errorText = response.text();
+            console.error("Error response:", errorText);
             throw new Error("Network response was not ok.");
         }
     }
@@ -72,22 +75,36 @@ const UserProfile = ({user}) => {
 
     const handleProfileSave = async (nextProfile) => {
         try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error("No user is currently logged in or user is not authenticated.");
+            }
+
+            const token = await currentUser.getIdToken();
+
             const payload = {
+                id: profile.id,
                 name: nextProfile.fullName,
-                email: nextProfile.email,
-                phone: nextProfile.phone,
+                email: profile.email,
+                role: profile.role || "user",
+                phone: nextProfile.phone || "",
+                avatar: nextProfile.avatarUrl || null,
+                password: profile.password || null,
                 address: {
-                    country: nextProfile.address.country,
-                    city: nextProfile.address.city,
-                    street: nextProfile.address.street,
-                    postalCode: nextProfile.address.postalCode,
+                    country: nextProfile.address?.country || "",
+                    city: nextProfile.address?.city || "",
+                    street: nextProfile.address?.street || "",
+                    postalCode: nextProfile.address?.postalCode || "",
                 },
             };
 
             const response = await fetch(`${API_BASE_URL}/users/${profile.id}`, {
-                method: "PATCH",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(payload),
             });

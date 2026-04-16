@@ -4,6 +4,7 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog.jsx";
 import Button from "@/components/ui/Button.jsx";
 import SearchBar from "@/components/ui/SearchBar.jsx";
 import API_BASE_URL from '@/config/api';
+import {getAuth} from "firebase/auth";
 
 
 const UsersDashboard = () => {
@@ -67,11 +68,21 @@ const UsersDashboard = () => {
 
     const handleSaveUser = async (userData) => {
         try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error('No user is currently logged in or user is not authenticated.');
+            }
+
+            const token = await currentUser.getIdToken();
+
             if (selectedUser) {
                 const response = await fetch(`${API_BASE_URL}/users/${selectedUser.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(userData)
                 });
@@ -84,6 +95,7 @@ const UsersDashboard = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(userData)
                 });
@@ -147,61 +159,63 @@ const UsersDashboard = () => {
             </div>
 
             <div className="bg-subsonic-navfooter border border-subsonic-border rounded-2xl overflow-hidden">
-                <table className="min-w-full divide-y divide-subsonic-border">
-                    <thead className="bg-subsonic-surface/50">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Nombre</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Teléfono</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Rol</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y divide-subsonic-border">
-                    {filteredUsers.length > 0 ? (
-                        filteredUsers.map(user => (
-                            <tr key={user.id} className="hover:bg-subsonic-surface/20 transition">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.id}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.email}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.phone || '-'}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                        user.role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
-                                            user.role === 'provider' ? 'bg-blue-500/20 text-blue-300' :
-                                                'bg-green-500/20 text-green-300'
-                                    }`}>
-                                        {user.role}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                    <Button
-                                        onClick={() => handleEdit(user)}
-                                        className="bg-subsonic-border text-subsonic-accent hover:text-opacity-80 hover:bg-subsonic-accent hover:text-subsonic-bg px-6 py-2"
-                                        variant=''
-                                    >
-                                        Editar
-                                    </Button>
-                                    <Button
-                                        onClick={() => setConfirmDelete({ id: user.id, name: user.name })}
-                                        className="bg-subsonic-border text-red-400 hover:bg-red-500 hover:text-subsonic-bg px-6 py-2"
-                                        variant=''
-                                    >
-                                        Eliminar
-                                    </Button>
+                <div className="w-full overflow-x-auto">
+                    <table className="min-w-225 w-full divide-y divide-subsonic-border">
+                        <thead className="bg-subsonic-surface/50">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Nombre</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Teléfono</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Rol</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody className="divide-y divide-subsonic-border">
+                        {filteredUsers.length > 0 ? (
+                            filteredUsers.map(user => (
+                                <tr key={user.id} className="hover:bg-subsonic-surface/20 transition">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.id}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.email}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{user.phone || '-'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                            user.role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
+                                                user.role === 'provider' ? 'bg-blue-500/20 text-blue-300' :
+                                                    'bg-green-500/20 text-green-300'
+                                        }`}>
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                        <Button
+                                            onClick={() => handleEdit(user)}
+                                            className="bg-subsonic-border text-subsonic-accent hover:text-opacity-80 hover:bg-subsonic-accent hover:text-subsonic-bg px-6 py-2"
+                                            variant=''
+                                        >
+                                            Editar
+                                        </Button>
+                                        <Button
+                                            onClick={() => setConfirmDelete({ id: user.id, name: user.name })}
+                                            className="bg-subsonic-border text-red-400 hover:bg-red-500 hover:text-subsonic-bg px-6 py-2"
+                                            variant=''
+                                        >
+                                            Eliminar
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" className="px-6 py-10 text-center text-sm text-subsonic-muted">
+                                    No se encontraron usuarios con ese filtro.
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6" className="px-6 py-10 text-center text-sm text-subsonic-muted">
-                                No se encontraron usuarios con ese filtro.
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
+                        )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Modal para crear/editar usuario */}

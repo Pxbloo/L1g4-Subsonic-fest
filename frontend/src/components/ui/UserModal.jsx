@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button.jsx";
 
 const UserModal = ({isOpen, onClose, onSave, user}) => {
     const [userData, setUserData] = useState({
+        id: '',
         name: '',
         email: '',
         phone: '',
@@ -25,6 +26,7 @@ const UserModal = ({isOpen, onClose, onSave, user}) => {
         }
         else {
             setUserData({
+                id: '',
                 name: '',
                 email: '',
                 phone: '',
