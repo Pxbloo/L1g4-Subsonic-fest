@@ -42,7 +42,6 @@ class SubsonicModel:
                 avatar=user_info.get("picture"),
                 phone="",
                 address=AddressDTO(country="", city="", street="", postalCode=""),
-                password=None,
             )
 
             user_dao.create(user_dto)
