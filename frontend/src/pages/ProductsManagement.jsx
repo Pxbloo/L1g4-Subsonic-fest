@@ -4,6 +4,7 @@ import API_BASE_URL from "@/config/api.js";
 import Button from "@/components/ui/Button.jsx";
 import SearchBar from "@/components/ui/SearchBar.jsx";
 import ConfirmDialog from "@/components/ui/ConfirmDialog.jsx";
+import { getAuth } from "firebase/auth";
 
 const ProductsManagement = () => {
 
@@ -65,39 +66,53 @@ const ProductsManagement = () => {
 
     const handleSaveProduct = async (productData) => {
         try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error('No user is currently logged in or user is not authenticated.');
+            }
+
+            const token = await currentUser.getIdToken();
+
             if (selectedProd) {
                 const response = await fetch(`${API_BASE_URL}/merchandising/${selectedProd.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(productData)
                 });
+
                 if (!response.ok) {
-                    console.error('Failed to update product:', response.statusText);
+                    const errorText = await response.text();
+                    throw new Error(`Request failed: ${response.status} ${errorText}`);
                 }
             } else {
                 const response = await fetch(`${API_BASE_URL}/merchandising`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
                         ...productData,
                         stock: 0
                     })
                 });
+
                 if (!response.ok) {
-                    console.error('Failed to create product:', response.statusText);
+                    const errorText = await response.text();
+                    throw new Error(`Request failed: ${response.status} ${errorText}`);
                 }
             }
+
+            setModalOpen(false);
+            await fetchProducts();
         }
         catch (error) {
             console.error('Error saving product:', error);
-        }
-        finally {
-            setModalOpen(false);
-            await fetchProducts();
         }
     };
 
