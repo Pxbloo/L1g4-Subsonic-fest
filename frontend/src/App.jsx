@@ -7,6 +7,8 @@ import Home from '@/pages/Home';
 import AuthModal from '@/components/ui/AuthModal';
 import UserProfile from "@/pages/UserProfile.jsx";
 import CheckoutPage from '@/pages/CheckoutPage';
+import CheckoutSuccess from '@/pages/CheckoutSuccess';
+import CheckoutCancel from '@/pages/CheckoutCancel';
 import FestivalInstance from '@/pages/FestivalInstance';
 import ArtistProfile from '@/pages/ArtistProfile';
 import History from '@/pages/History';
@@ -118,8 +120,10 @@ function App() {
 
             {/* Rutas de CLIENTE */}
             <Route path="/tienda" element={<Merch />} />
-            <Route path="/history" element={<ProtectedRoute user={user} authReady={authReady} allowedRoles={['admin', 'provider', 'user']}> <History /> </ProtectedRoute>} />
-            <Route path="/checkout" element={<ProtectedRoute user={user} authReady={authReady}  allowedRoles={['admin', 'provider', 'user']}> <CheckoutPage /> </ProtectedRoute>} />
+            <Route path="/history" element={<History />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/cancel" element={<CheckoutCancel />} />
             <Route path="/blog" element={<Blog />} />
 
             {/* Rutas de PROVEEDOR */}
