@@ -91,7 +91,6 @@ const UserProfile = ({user}) => {
                 role: profile.role || "user",
                 phone: nextProfile.phone || "",
                 avatar: nextProfile.avatarUrl || null,
-                password: profile.password || null,
                 address: {
                     country: nextProfile.address?.country || "",
                     city: nextProfile.address?.city || "",
