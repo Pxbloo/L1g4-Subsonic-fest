@@ -348,6 +348,14 @@ async def get_merchandising():
     products = model.listar_merchandising()
     return products
 
+@app.get("/api/merchandising/{product_id}")
+async def get_merchandising_by_id(product_id: str):
+    """Endpoint público para obtener un producto de merchandising por su ID."""
+    product = model.listar_merchandising_por_id(product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Producto de merchandising no encontrado")
+    return product
+
 @app.post("/api/merchandising")
 async def create_merchandising(product: MerchandisingDTO, current_user: UserDTO = Depends(get_current_user)):
     """Endpoint protegido para crear un nuevo producto de merchandising."""
@@ -381,3 +389,76 @@ async def delete_merchandising(product_id: str, current_user: UserDTO = Depends(
         raise HTTPException(status_code=403, detail="Permiso denegado")
     model.eliminar_merchandising(product_id)
     return {"detail": "Producto eliminado"}
+
+# Endpoints de favoritos
+@app.get("/api/favorites")
+async def get_favorites(current_user: UserDTO = Depends(get_current_user)):
+    """Endpoint protegido que devuelve los favoritos del usuario autenticado."""
+    favorites = model.obtener_favoritos_usuario(current_user.id)
+    return favorites
+
+@app.post("/api/favorites/artists/{artist_id}")
+async def add_favorite_artist(artist_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Agrega un artista a los favoritos del usuario."""
+    success = model.agregar_artista_favorito(current_user.id, artist_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al agregar artista a favoritos")
+    return {"detail": "Artista agregado a favoritos"}
+
+@app.delete("/api/favorites/artists/{artist_id}")
+async def remove_favorite_artist(artist_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Elimina un artista de los favoritos del usuario."""
+    success = model.eliminar_artista_favorito(current_user.id, artist_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al eliminar artista de favoritos")
+    return {"detail": "Artista eliminado de favoritos"}
+
+@app.post("/api/favorites/festivals/{festival_id}")
+async def add_favorite_festival(festival_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Agrega un festival a los favoritos del usuario."""
+    success = model.agregar_festival_favorito(current_user.id, festival_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al agregar festival a favoritos")
+    return {"detail": "Festival agregado a favoritos"}
+
+@app.delete("/api/favorites/festivals/{festival_id}")
+async def remove_favorite_festival(festival_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Elimina un festival de los favoritos del usuario."""
+    success = model.eliminar_festival_favorito(current_user.id, festival_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al eliminar festival de favoritos")
+    return {"detail": "Festival eliminado de favoritos"}
+
+@app.post("/api/favorites/products/{product_id}")
+async def add_favorite_product(product_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Agrega un producto a los favoritos del usuario."""
+    success = model.agregar_producto_favorito(current_user.id, product_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al agregar producto a favoritos")
+    return {"detail": "Producto agregado a favoritos"}
+
+@app.delete("/api/favorites/products/{product_id}")
+async def remove_favorite_product(product_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Elimina un producto de los favoritos del usuario."""
+    success = model.eliminar_producto_favorito(current_user.id, product_id)
+    if not success:
+        raise HTTPException(status_code=400, detail="Error al eliminar producto de favoritos")
+    return {"detail": "Producto eliminado de favoritos"}
+
+@app.get("/api/favorites/artists/{artist_id}/check")
+async def check_favorite_artist(artist_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Verifica si un artista está en los favoritos del usuario."""
+    is_favorite = model.es_artista_favorito(current_user.id, artist_id)
+    return {"is_favorite": is_favorite}
+
+@app.get("/api/favorites/festivals/{festival_id}/check")
+async def check_favorite_festival(festival_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Verifica si un festival está en los favoritos del usuario."""
+    is_favorite = model.es_festival_favorito(current_user.id, festival_id)
+    return {"is_favorite": is_favorite}
+
+@app.get("/api/favorites/products/{product_id}/check")
+async def check_favorite_product(product_id: str, current_user: UserDTO = Depends(get_current_user)):
+    """Verifica si un producto está en los favoritos del usuario."""
+    is_favorite = model.es_producto_favorito(current_user.id, product_id)
+    return {"is_favorite": is_favorite}

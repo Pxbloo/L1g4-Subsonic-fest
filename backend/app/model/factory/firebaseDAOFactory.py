@@ -6,6 +6,7 @@ from ..dao.firebase.firebase_blog_dao import FirebaseBlogDAO
 from ..dao.firebase.firebase_grounds_dao import FirebaseGroundDAO
 from ..dao.firebase.firebase_history_dao import FirebaseHistoryDAO
 from ..dao.firebase.firebase_merchandising_dao import FirebaseMerchandisingDAO
+from ..dao.firebase.firebase_favorites_dao import FirebaseFavoritesDAO
 
 
 class FirebaseDAOFactory(InterfaceDAOFactory):
@@ -30,3 +31,6 @@ class FirebaseDAOFactory(InterfaceDAOFactory):
 
     def get_merchandising_dao(self) -> FirebaseMerchandisingDAO:
         return FirebaseMerchandisingDAO()
+
+    def get_favorites_dao(self) -> FirebaseFavoritesDAO:
+        return FirebaseFavoritesDAO()

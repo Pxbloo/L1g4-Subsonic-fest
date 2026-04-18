@@ -166,3 +166,54 @@ class SubsonicModel:
     def actualizar_merchandising(self, product_dto):
         dao = self.factory.get_merchandising_dao()
         return dao.update(product_dto.id, product_dto)
+
+    # === Favoritos ===
+    def obtener_favoritos_usuario(self, user_id: str):
+        """Devuelve los favoritos de un usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.get_by_user_id(user_id)
+
+    def agregar_artista_favorito(self, user_id: str, artist_id: str):
+        """Agrega un artista a los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.add_favorite_artist(user_id, artist_id)
+
+    def eliminar_artista_favorito(self, user_id: str, artist_id: str):
+        """Elimina un artista de los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.remove_favorite_artist(user_id, artist_id)
+
+    def agregar_festival_favorito(self, user_id: str, festival_id: str):
+        """Agrega un festival a los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.add_favorite_festival(user_id, festival_id)
+
+    def eliminar_festival_favorito(self, user_id: str, festival_id: str):
+        """Elimina un festival de los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.remove_favorite_festival(user_id, festival_id)
+
+    def agregar_producto_favorito(self, user_id: str, product_id: str):
+        """Agrega un producto a los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.add_favorite_product(user_id, product_id)
+
+    def eliminar_producto_favorito(self, user_id: str, product_id: str):
+        """Elimina un producto de los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.remove_favorite_product(user_id, product_id)
+
+    def es_artista_favorito(self, user_id: str, artist_id: str) -> bool:
+        """Verifica si un artista está en los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.is_artist_favorite(user_id, artist_id)
+
+    def es_festival_favorito(self, user_id: str, festival_id: str) -> bool:
+        """Verifica si un festival está en los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.is_festival_favorite(user_id, festival_id)
+
+    def es_producto_favorito(self, user_id: str, product_id: str) -> bool:
+        """Verifica si un producto está en los favoritos del usuario."""
+        dao = self.factory.get_favorites_dao()
+        return dao.is_product_favorite(user_id, product_id)
