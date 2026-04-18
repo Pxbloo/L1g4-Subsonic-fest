@@ -41,6 +41,11 @@ function Merch() {
         const requestedCategory = (searchParams.get("categoria") || "all").toLowerCase();
         const validCategories = new Set(categories.map((category) => category.id));
         setActiveCategoryId(validCategories.has(requestedCategory) ? requestedCategory : "all");
+
+        const requestedProduct = (searchParams.get("producto") || "").toLowerCase();
+        if (requestedProduct) {
+            setSearchTerm(requestedProduct);
+        }
     }, [categories, searchParams]);
 
     useEffect(() => {
@@ -80,7 +85,6 @@ function Merch() {
                         price: formattedPrice,
                         description: item.description,
                         stock: Number(item.stock ?? 0),
-                        // De momento no hay opciones de compra en la API
                         purchaseOptions: [],
                     };
                 });
@@ -175,14 +179,13 @@ function Merch() {
             })
             .filter((p) => {
                 if (!q) return true;
-                const haystack = `${p.name ?? ""}`.toLowerCase();
+                const haystack = `${p.name ?? ""} ${p.id ?? ""}`.toLowerCase();
                 return haystack.includes(q);
             });
     }, [products, activeCategoryId, searchTerm]);
 
     return (
         <section className="space-y-6 -mt-6 md:-mt-16">
-            {/* Barra merch */}
             <div className="-mx-6 md:-mx-16">
                 <MerchCategoryBar
                     categories={categories}
@@ -204,6 +207,7 @@ function Merch() {
                 {visibleProducts.map((p) => (
                     <ShopCard
                         key={p.id}
+                        id={p.id}
                         name={p.name}
                         category={p.categoryLabel}
                         price={p.price}
@@ -228,5 +232,4 @@ function Merch() {
 }
 
 export default Merch;
-
 
