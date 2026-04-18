@@ -20,6 +20,7 @@ import ContactUs from "@/pages/ContactUs.jsx";
 import TicketsManagement from "@/pages/TicketsManagement.jsx";
 import GroundsProvider from "@/pages/GroundsProvider.jsx";
 import ArtistMan from "@/pages/ArtistManagement.jsx";
+import ProductMan from "@/pages/ProductsManagement.jsx";
 
 import { setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { auth } from './config/firebase';
@@ -132,7 +133,7 @@ function App() {
             <Route path="/dashboard-usuarios" element={<ProtectedRoute user={user} authReady={authReady} allowedRoles={['admin']}> <UsersDashboard /> </ProtectedRoute>} />
             <Route path="/dashboard-entradas" element={<ProtectedRoute user={user} authReady={authReady} allowedRoles={['admin']}> <TicketsManagement /> </ProtectedRoute>} />
             <Route path="/dashboard-artistas" element={<ProtectedRoute user={user} authReady={authReady} allowedRoles={['admin']}> <ArtistMan /> </ProtectedRoute>} />
-
+              <Route path="/dashboard-productos" element={<ProtectedRoute user={user} authReady={authReady} allowedRoles={['admin']}> <ProductMan /> </ProtectedRoute>} />
           </Routes>
         </main>
 
