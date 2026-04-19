@@ -63,6 +63,10 @@ class SubsonicModel:
         user_dao = self.factory.get_user_dao()
         return user_dao.get_by_id(user_id)
 
+    def listar_usuario_por_email(self, email: str):
+        user_dao = self.factory.get_user_dao()
+        return user_dao.get_by_email(email)
+
     def actualizar_usuario(self, user_dto: UserDTO):
         user_dao = self.factory.get_user_dao()
         return user_dao.update(user_dto.id, user_dto)

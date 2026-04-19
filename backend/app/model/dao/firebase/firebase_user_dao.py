@@ -22,6 +22,11 @@ class FirebaseUserDAO(UserDAO):
         doc = self.collection.document(user_id).get()
         return UserDTO.model_validate(doc.to_dict()) if doc.exists else None
 
+    def get_by_email(self, email: str) -> Optional[UserDTO]:
+        doc = self.collection.where("email", "==", email).get()
+        return UserDTO.model_validate(doc.to_dict()) if doc.exists else None
+
+
     def create(self, user: UserDTO) -> bool:
         """Crea un nuevo documento en la colección 'users' con los datos proporcionados por el objeto UserDTO. 
         El ID del documento se establece como el valor del atributo 'id' del objeto UserDTO."""
