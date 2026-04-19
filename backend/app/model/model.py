@@ -114,10 +114,7 @@ class SubsonicModel:
         return dao.delete(festival_id)
 
     def listar_artistas_por_festival(self, festival_id: str):
-        """Devuelve artistas asociados a un festival.
-
-        De momento es un placeholder que devuelve todos los artistas.
-        """
+        """Devuelve artistas asociados a un festival."""
         dao = self.factory.get_artist_dao()
         return dao.get_all()
 

@@ -5,25 +5,6 @@ import SocialLinks from "@/components/ui/SocialLinks";
 import BaseCard from "@/components/ui/BaseCard.jsx";
 import API_BASE_URL from '@/config/api';
 
-const normalizeText = (value) => String(value || '').trim().toLowerCase();
-
-const isArtistInFestival = (festival, artist) => {
-  if (!festival?.lineup || !artist) return false;
-
-  const artistId = normalizeText(artist.id);
-  const artistName = normalizeText(artist.name);
-
-  return festival.lineup.some((lineupArtist) => {
-    const lineupId = normalizeText(lineupArtist?.id);
-    const lineupName = normalizeText(lineupArtist?.name);
-
-    return (
-      (artistId && lineupId && artistId === lineupId) ||
-      (artistName && lineupName && artistName === lineupName)
-    );
-  });
-};
-
 const ArtistProfile = () => {
   const { id } = useParams();
   const [artist, setArtist] = useState(null);
@@ -34,7 +15,7 @@ const ArtistProfile = () => {
       try {
         const [artistResponse, festivalsResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/artists/${id}`),
-          fetch(`${API_BASE_URL}/festivals`),
+          fetch(`${API_BASE_URL}/artists/${id}/festivals`),
         ]);
 
         if (!artistResponse.ok) {
@@ -52,15 +33,9 @@ const ArtistProfile = () => {
         }
 
         const festivalsData = await festivalsResponse.json();
-        const festivals = Array.isArray(festivalsData) ? festivalsData : [];
-
-        const filteredFestivals = festivals.filter((festival) =>
-          isArtistInFestival(festival, artistData)
-        );
-
-        setRelatedFestivals(filteredFestivals);
+        setRelatedFestivals(Array.isArray(festivalsData) ? festivalsData : []);
       } catch (error) {
-        console.error('Error fetching artist:', error);
+        console.error('Error fetching artist profile data:', error);
         setArtist(null);
         setRelatedFestivals([]);
       }
