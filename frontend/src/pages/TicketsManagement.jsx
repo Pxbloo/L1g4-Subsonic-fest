@@ -4,17 +4,16 @@ import Input from '@/components/ui/Input';
 import BaseCard from '@/components/ui/BaseCard';
 import API_BASE_URL from '@/config/api';
 import TicketTemplateForm from '@/components/ui/TicketTemplateForm';
+import {getAuth} from "firebase/auth";
+import ConfirmDialog from '@/components/ui/ConfirmDialog.jsx';
 
 const TicketsManagement = () => {
   const [templates, setTemplates] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [currentTemplate, setCurrentTemplate] = useState({ name: '', features: '', price: '' });
 
   const API_URL = `${API_BASE_URL}/ticketTemplates`;
-
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
 
   const fetchTemplates = async () => {
     try {
@@ -25,8 +24,23 @@ const TicketsManagement = () => {
     }
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchTemplates();
+  }, []);
+
   const handleSave = async (e) => {
     e.preventDefault();
+
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      throw new Error('No user is currently logged in or user is not authenticated.');
+    }
+
+    const token = await currentUser.getIdToken();
+
     const isNew = !currentTemplate.id;
     const method = isNew ? 'POST' : 'PUT'; 
     const url = isNew ? API_URL : `${API_URL}/${currentTemplate.id}`;
@@ -41,7 +55,10 @@ const TicketsManagement = () => {
     try {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(templateToSave)
       });
 
@@ -62,15 +79,28 @@ const TicketsManagement = () => {
     setIsEditing(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Eliminar esta plantilla de db.json?")) {
+  const handleDelete = async (template) => {
+    if (!template) return;
       try {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+
+        const token = await currentUser.getIdToken();
+        const response = await fetch(`${API_URL}/${template.id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          console.error('Failed to delete template:', response.statusText);
+        }
+
+        setConfirmDelete(null);
         fetchTemplates();
       } catch (err) {
         console.error("Error al borrar de db.json:", err);
       }
-    }
   };
 
   return (
@@ -114,7 +144,7 @@ const TicketsManagement = () => {
               </div>
               <div className="flex gap-3">
                 <Button variant="ghost" onClick={() => handleEdit(t)}>Editar</Button>
-                <Button variant="danger" className="text-xs px-4" onClick={() => handleDelete(t.id)}>Eliminar</Button>
+                <Button variant="danger" className="text-xs px-4" onClick={() => setConfirmDelete(t)}>Eliminar</Button>
               </div>
             </div>
           ))}
@@ -125,6 +155,14 @@ const TicketsManagement = () => {
           )}
         </div>
       )}
+      <ConfirmDialog
+          isOpen={!!confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={handleDelete}
+          title="Eliminar plantilla"
+          message={`¿Estás seguro de que deseas eliminar "${confirmDelete?.name}"? Esta acción no se puede deshacer.`}
+          user={confirmDelete}
+      />
     </div>
   );
 };
