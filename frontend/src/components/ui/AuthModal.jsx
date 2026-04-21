@@ -141,6 +141,7 @@ const AuthModal = ({ isOpen, initialType, onClose, onLoginSuccess }) => {
     const form = event.currentTarget;
     if (!canSubmit) {
       console.log("Demasiados intentos de inicio de sesión en poco tiempo! Espera unos segundos antes de volver a intentarlo.");
+      alert("Vas demasiado rápido. Espera unos segundos antes de volver a intentarlo.")
       return;
     }
     setCanSubmit(false);

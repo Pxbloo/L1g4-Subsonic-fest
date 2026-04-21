@@ -91,6 +91,7 @@ const FestivalsManagement = () => {
   const [currentFestival, setCurrentFestival] = useState({
     title: '', date: '', startDate: '', location: '', description: '', tickets: [], lineup: []
   });
+  const [canSubmit, setCanSubmit] = useState(true);
 
   const API_URL = API_BASE_URL;
 
@@ -117,6 +118,11 @@ const FestivalsManagement = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (!canSubmit) {
+        alert('Por favor, espera antes de hacer más peticiones.');
+        return;
+    }
+    setCanSubmit(false);
     const isNew = !currentFestival.id;
     const method = isNew ? 'POST' : 'PUT';
     const url = isNew ? `${API_URL}/festivals` : `${API_URL}/festivals/${currentFestival.id}`;
@@ -132,9 +138,15 @@ const FestivalsManagement = () => {
     } catch (err) {
       console.error("Error al guardar festival:", err);
     }
+    setCanSubmit(true);
   };
 
   const handleDelete = async (id) => {
+      if (!canSubmit) {
+          alert('Por favor, espera antes de hacer más peticiones.');
+          return;
+      }
+      setCanSubmit(false);
     if (window.confirm("¿Estás seguro de que quieres eliminar este festival?")) {
       try {
         await fetch(`${API_URL}/festivals/${id}`, { method: 'DELETE' });
@@ -142,6 +154,7 @@ const FestivalsManagement = () => {
       } catch (err) {
         console.error("Error al eliminar festival:", err);
       }
+      setCanSubmit(true);
     }
   };
 
