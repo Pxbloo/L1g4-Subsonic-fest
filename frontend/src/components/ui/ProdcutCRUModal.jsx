@@ -3,21 +3,12 @@ import Button from "@/components/ui/Button.jsx";
 import Input from "@/components/ui/Input.jsx";
 
 const emptyProduct = {
-    id: '',
     name: '',
     type: '',
     price: '',
     stock: 0,
     description: '',
 };
-
-const normalizeProductId = (value) =>
-    String(value || '')
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
 
 const mergeProductWithDefaults = (product = {}) => ({
     ...emptyProduct,
@@ -42,19 +33,6 @@ const ProdcutCRUModal = ({ isOpen, onClose, onSave, product }) => {
         }
     }, [product, isOpen]);
 
-    useEffect(() => {
-        if (!product) {
-            const generatedId = normalizeProductId(productData.name);
-            if (generatedId && productData.id !== generatedId) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setProductData((prev) => ({
-                    ...prev,
-                    id: generatedId,
-                }));
-            }
-        }
-    }, [product, productData.name, productData.id]);
-
     if (!isOpen) return null;
 
     const handleChange = (e) => {
@@ -62,16 +40,8 @@ const ProdcutCRUModal = ({ isOpen, onClose, onSave, product }) => {
 
         setProductData((prev) => ({
             ...prev,
-            [name]: name === 'price' ? value : value,
+            [name]: value,
         }));
-
-        if (!product && name === 'name') {
-            setProductData((prev) => ({
-                ...prev,
-                name: value,
-                id: normalizeProductId(value),
-            }));
-        }
     };
 
     const handleSubmit = (e) => {
@@ -112,15 +82,6 @@ const ProdcutCRUModal = ({ isOpen, onClose, onSave, product }) => {
                             value={productData.name}
                             onChange={handleChange}
                             placeholder="Nombre del producto"
-                            required
-                        />
-
-                        <Input
-                            label="ID"
-                            name="id"
-                            value={productData.id}
-                            onChange={handleChange}
-                            placeholder="nombre-del-producto"
                             required
                         />
 

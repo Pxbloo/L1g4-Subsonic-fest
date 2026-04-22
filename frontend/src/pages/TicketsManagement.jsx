@@ -79,6 +79,8 @@ const TicketsManagement = () => {
       const isNew = !selectedTemplate?.id;
       const method = isNew ? 'POST' : 'PUT';
       const url = isNew ? API_URL : `${API_URL}/${selectedTemplate.id}`;
+      const templatePayload = { ...templateData };
+      delete templatePayload.id;
 
       const response = await fetch(url, {
         method,
@@ -86,7 +88,7 @@ const TicketsManagement = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(templateData)
+        body: JSON.stringify(templatePayload)
       });
 
       if (!response.ok) {

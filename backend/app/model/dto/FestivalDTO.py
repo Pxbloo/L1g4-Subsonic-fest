@@ -24,7 +24,7 @@ class GroundItemDTO(BaseModel):
 
 class FestivalDTO(BaseModel):
     """Objeto de transferencia de datos principal para la entidad Festival."""
-    id: str
+    id: Optional[str] = None
     title: str
     date: str
     startDate: str

@@ -80,6 +80,8 @@ const ProductsManagement = () => {
             }
 
             const token = await currentUser.getIdToken();
+            const productPayload = { ...productData };
+            delete productPayload.id;
 
             if (selectedProd) {
                 const response = await fetch(`${API_BASE_URL}/merchandising/${selectedProd.id}`, {
@@ -88,7 +90,7 @@ const ProductsManagement = () => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify(productData)
+                    body: JSON.stringify(productPayload)
                 });
 
                 if (!response.ok) {
@@ -102,10 +104,7 @@ const ProductsManagement = () => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        ...productData,
-                        stock: 0
-                    })
+                    body: JSON.stringify(productPayload)
                 });
 
                 if (!response.ok) {
