@@ -47,8 +47,7 @@ const GroundInstance = () => {
     }
   }, [grounds]);
 
-  const numericId = Number(id);
-  const ground = grounds.find((g) => Number(g.id) === numericId);
+  const ground = grounds.find((g) => String(g.id) === String(id));
 
   if (!ground) {
     return (
@@ -75,7 +74,7 @@ const GroundInstance = () => {
 
     setGrounds((prev) =>
       prev.map((g) =>
-        Number(g.id) === numericId
+        String(g.id) === String(id)
           ? { ...g, status: nextStatus }
           : g
       )
@@ -88,7 +87,7 @@ const GroundInstance = () => {
       if (!confirmed) return;
     }
 
-    setGrounds((prev) => prev.filter((g) => Number(g.id) !== numericId));
+    setGrounds((prev) => prev.filter((g) => String(g.id) !== String(id)));
     navigate('/grounds');
   };
 
@@ -99,7 +98,7 @@ const GroundInstance = () => {
           <BaseCard className="bg-subsonic-navfooter/90 rounded-3xl overflow-hidden p-0">
             <div className="w-full aspect-4/3 overflow-hidden">
               <img
-                src={groundImage}
+                src={ground.image || groundImage}
                 alt={ground.name}
                 className="w-full h-full object-cover opacity-80"
               />

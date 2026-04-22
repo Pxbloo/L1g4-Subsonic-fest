@@ -46,6 +46,8 @@ const GroundsProvider = ({ user }) => {
     const getReservation = (groundId) =>
         reservations.find((r) => r.groundId === groundId && r.status !== 'rejected');
 
+    const getGroundImage = (ground) => ground?.image || groundImage;
+
     const handleReserve = async (ground) => {
         const existing = getReservation(ground.id);
         if (existing) return;
@@ -120,7 +122,7 @@ const GroundsProvider = ({ user }) => {
                                     <BaseCard className="relative items-stretch rounded-3xl bg-subsonic-navfooter/90">
                                         <div className="bg-subsonic-bg/80 rounded-2xl mb-4 w-full overflow-hidden aspect-4/3">
                                             <img
-                                                src={groundImage}
+                                                src={getGroundImage(ground)}
                                                 alt={ground.name}
                                                 className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
                                             />
@@ -173,7 +175,7 @@ const GroundsProvider = ({ user }) => {
                         <BaseCard className="bg-subsonic-navfooter/90 rounded-3xl overflow-hidden p-0 flex flex-col">
                             <div className="w-full h-40 md:h-56 overflow-hidden">
                                 <img
-                                    src={groundImage}
+                                    src={getGroundImage(selectedGround)}
                                     alt={selectedGround.name}
                                     className="w-full h-full object-cover opacity-80"
                                 />
