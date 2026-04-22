@@ -10,7 +10,7 @@ class AddressDTO(BaseModel):
 
 class ArtistDTO(BaseModel):
     """Objeto de transferencia de datos para la entidad Artista."""
-    id: str
+    id: Optional[str] = None
     name: str
     genre: str
     email: Optional[str] = None

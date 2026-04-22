@@ -3,19 +3,10 @@ import Input from './Input';
 import Button from './Button';
 
 const emptyTemplate = {
-  id: '',
   name: '',
   features: '',
   price: ''
 };
-
-const normalizeTemplateId = (value) =>
-  String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
 
 const mergeTemplateWithDefaults = (template = {}) => ({
   ...emptyTemplate,
@@ -35,19 +26,6 @@ const TicketTemplateForm = ({ isOpen, onClose, onSave, template }) => {
       setTemplateData(emptyTemplate);
     }
   }, [template, isOpen]);
-
-  useEffect(() => {
-    if (!template) {
-      const generatedId = normalizeTemplateId(templateData.name);
-      if (generatedId && templateData.id !== generatedId) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setTemplateData((prev) => ({
-          ...prev,
-          id: generatedId,
-        }));
-      }
-    }
-  }, [template, templateData.name, templateData.id]);
 
   if (!isOpen) return null;
 
@@ -95,14 +73,6 @@ const TicketTemplateForm = ({ isOpen, onClose, onSave, template }) => {
               value={templateData.name}
               onChange={handleChange}
               placeholder="Abono VIP"
-              required
-            />
-            <Input
-              label="ID"
-              name="id"
-              value={templateData.id}
-              onChange={handleChange}
-              placeholder="abono-vip"
               required
             />
             <Input

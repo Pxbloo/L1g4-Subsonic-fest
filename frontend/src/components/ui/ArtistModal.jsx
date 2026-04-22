@@ -4,7 +4,6 @@ import Input from "@/components/ui/Input.jsx";
 import API_BASE_URL from "@/config/api.js";
 
 const emptyArtist = {
-    id: '',
     name: '',
     email: '',
     phone: '',
@@ -18,14 +17,6 @@ const emptyArtist = {
         postalCode: ''
     }
 };
-
-const normalizeArtistId = (name) =>
-    String(name || '')
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
 
 const mergeArtistWithDefaults = (artist = {}) => ({
     ...emptyArtist,
@@ -85,19 +76,6 @@ const ArtistModal = ({ isOpen, onClose, onSave, artist }) => {
         fetchFestivals();
     }, [artist?.id, isOpen]);
 
-    useEffect(() => {
-        if (!artist) {
-            const generatedId = normalizeArtistId(artistData.name);
-            if (generatedId && artistData.id !== generatedId) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setArtistData((prev) => ({
-                    ...prev,
-                    id: generatedId
-                }));
-            }
-        }
-    }, [artist, artistData.name, artistData.id]);
-
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
@@ -119,15 +97,7 @@ const ArtistModal = ({ isOpen, onClose, onSave, artist }) => {
             return;
         }
 
-        setArtistData(prev => {
-            const next = { ...prev, [name]: value };
-
-            if (!artist && name === 'name') {
-                next.id = normalizeArtistId(value);
-            }
-
-            return next;
-        });
+        setArtistData(prev => ({ ...prev, [name]: value }));
     };
 
     return (
@@ -155,14 +125,6 @@ const ArtistModal = ({ isOpen, onClose, onSave, artist }) => {
                             value={artistData.name}
                             onChange={handleChange}
                             placeholder="Nombre del artista"
-                            required
-                        />
-                        <Input
-                            label="ID"
-                            name="id"
-                            value={artistData.id}
-                            onChange={handleChange}
-                            placeholder="nombre-del-artista"
                             required
                         />
                         <Input

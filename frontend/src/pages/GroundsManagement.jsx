@@ -243,10 +243,6 @@ const GroundsManagement = () => {
         image: String(currentGround.image || '').trim(),
       };
 
-      if (!isNew) {
-        payload.id = groundId;
-      }
-
       const method = isNew ? 'POST' : 'PUT';
       const url = isNew
         ? `${API_BASE_URL}/grounds`

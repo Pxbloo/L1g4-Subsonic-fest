@@ -9,7 +9,6 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog.jsx';
 const DEFAULT_FESTIVAL_IMAGE = 'https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg';
 
 const emptyFestival = {
-  id: '',
   title: '',
   date: '',
   startDate: '',
@@ -20,14 +19,6 @@ const emptyFestival = {
   lineup: [],
   grounds: []
 };
-
-const normalizeFestivalId = (value) =>
-  String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
 
 const normalizeFestivalGrounds = (festival, availableGrounds = []) => {
   if (Array.isArray(festival?.grounds) && festival.grounds.length > 0) {
@@ -83,12 +74,6 @@ const GeneralInfoForm = ({ data, onChange }) => (
         onChange={(e) => onChange({ ...data, title: e.target.value })}
         placeholder="Boombastic Asturias"
         required
-      />
-      <Input
-        label="ID"
-        value={data.id}
-        onChange={(e) => onChange({ ...data, id: e.target.value })}
-        placeholder="boombastic-asturias"
       />
       <Input
         label="Fecha visible"
@@ -600,18 +585,14 @@ const FestivalsManagement = () => {
       }
 
       const isNew = !selectedFestival?.id;
-      const festivalId = isNew
-        ? normalizeFestivalId(currentFestival.title)
-        : String(selectedFestival.id || currentFestival.id || '');
+      const festivalId = String(selectedFestival?.id || '').trim();
 
-      if (!festivalId) {
-        alert('Debes indicar un título válido para generar el ID del festival.');
+      if (!isNew && !festivalId) {
+        alert('No se pudo identificar el festival a actualizar.');
         return;
       }
 
       const festivalToSave = {
-        ...currentFestival,
-        id: festivalId,
         title: String(currentFestival.title || '').trim(),
         date: String(currentFestival.date || '').trim(),
         startDate: String(currentFestival.startDate || '').trim(),

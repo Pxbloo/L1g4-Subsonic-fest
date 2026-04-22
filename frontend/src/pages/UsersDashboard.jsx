@@ -94,9 +94,11 @@ const UsersDashboard = () => {
                 uid = userCredential.user.uid;
             }
 
+            const restUserData = { ...userData };
+            delete restUserData.id;
             const payload = {
-                ...userData,
-                id: userData.id?.trim() || uid
+                ...restUserData,
+                id: uid
             };
             delete payload.password;
 

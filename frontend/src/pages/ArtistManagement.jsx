@@ -83,6 +83,8 @@ const ArtistManagement = () => {
             }
 
             const token = await currentUser.getIdToken();
+            const artistPayload = { ...artistData };
+            delete artistPayload.id;
 
             if (selectedArt) {
                 const response = await fetch(`${API_BASE_URL}/artists/${selectedArt.id}`, {
@@ -91,7 +93,7 @@ const ArtistManagement = () => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify(artistData)
+                    body: JSON.stringify(artistPayload)
                 });
 
                 if (!response.ok) {
@@ -105,10 +107,7 @@ const ArtistManagement = () => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        ...artistData,
-                        stock: 0
-                    })
+                    body: JSON.stringify(artistPayload)
                 });
 
                 if (!response.ok) {
@@ -119,10 +118,11 @@ const ArtistManagement = () => {
 
             setModalOpen(false);
             await fetchArtists();
-            setCanSubmit(true);
         }
         catch (error) {
             console.error('Error saving product:', error);
+        } finally {
+            setCanSubmit(true);
         }
     };
 

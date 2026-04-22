@@ -101,6 +101,8 @@ async def create_artist(artist: ArtistDTO, current_user: UserDTO = Depends(get_c
 	if current_user.role != "admin":
 		raise HTTPException(status_code=403, detail="Permiso denegado")
 
+	artist.id = str(uuid4())
+
 	success = model.crear_artista(artist)
 	if not success:
 		raise HTTPException(status_code=400, detail="Error al crear el artista")
@@ -248,6 +250,8 @@ async def create_festival(festival: FestivalDTO, current_user: UserDTO = Depends
 	if current_user.role != "admin":
 		raise HTTPException(status_code=403, detail="Permiso denegado")
 
+	festival.id = str(uuid4())
+
 	success = model.crear_festival(festival)
 	if not success:
 		raise HTTPException(status_code=400, detail="Error al crear el festival")
@@ -301,7 +305,7 @@ async def get_ticket_templates():
 @router.post("/api/ticketTemplates")
 async def create_ticket_template(template: TicketTemplateDTO, current_user: UserDTO = Depends(get_current_user)):
 	_ensure_admin(current_user)
-	template.id = template.id or str(uuid4())
+	template.id = str(uuid4())
 	success = model.crear_ticket_template(template)
 	if not success:
 		raise HTTPException(status_code=400, detail="Error al crear plantilla de entrada")
@@ -344,6 +348,9 @@ async def get_grounds():
 async def create_ground(ground: GroundDTO, current_user: UserDTO = Depends(get_current_user)):
 	if current_user.role not in ["admin", "provider"]:
 		raise HTTPException(status_code=403, detail="Solo administradores o proveedores pueden crear recintos")
+
+	ground.id = str(uuid4())
+
 	model.crear_recinto(ground)
 	return ground
 
@@ -509,6 +516,8 @@ async def get_merchandising_by_id(product_id: str):
 async def create_merchandising(product: MerchandisingDTO, current_user: UserDTO = Depends(get_current_user)):
 	if current_user.role != "admin":
 		raise HTTPException(status_code=403, detail="Permiso denegado")
+
+	product.id = str(uuid4())
 
 	success = model.crear_merchandising(product)
 	if not success:

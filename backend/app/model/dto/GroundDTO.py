@@ -3,7 +3,7 @@ from typing import Optional
 
 class GroundDTO(BaseModel):
     """Objeto de transferencia de datos para las zonas o escenarios del recinto."""
-    id: str
+    id: Optional[str] = None
     name: str
     status: str
     capacity: int
