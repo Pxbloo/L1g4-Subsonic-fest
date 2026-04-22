@@ -1,368 +1,432 @@
-import React, { useEffect, useState } from 'react';
-import BaseCard from '@/components/ui/BaseCard.jsx';
+import React, { useEffect, useMemo, useState } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import PageHeader from '@/components/ui/PageHeader';
-import groundImage from '@/assets/images/Ground.jpg';
-import SearchIcon from '@/assets/icons/search.svg';
+import SearchBar from '@/components/ui/SearchBar.jsx';
+import ConfirmDialog from '@/components/ui/ConfirmDialog.jsx';
 import API_BASE_URL from '@/config/api';
+import { getAuth } from 'firebase/auth';
+
+const DEFAULT_GROUND_IMAGE = 'https://www.boombasticfestival.com/images/passes/abono-vip-pass.jpg';
+
+const emptyGround = {
+  name: '',
+  area: '',
+  capacity: 0,
+  status: 'Operativo',
+  image: ''
+};
+
+const statusStyles = {
+  Operativo: 'bg-green-500/20 text-green-300',
+  'En montaje': 'bg-yellow-500/20 text-yellow-300',
+  'Solo staff': 'bg-red-500/20 text-red-300',
+};
+
+const GroundFormModal = ({ isOpen, onClose, onSave, data, onChange, isEditing }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 py-6">
+      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-subsonic-border bg-subsonic-navfooter shadow-2xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-subsonic-border px-6 py-4">
+          <h2 className="text-xl font-black uppercase tracking-tight text-subsonic-accent">
+            {isEditing ? 'Editar recinto' : 'Nuevo recinto'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-lg text-subsonic-muted hover:text-subsonic-text"
+            aria-label="Cerrar modal"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={onSave} className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Nombre"
+              name="name"
+              value={data.name}
+              onChange={(e) => onChange({ ...data, name: e.target.value })}
+              placeholder="Escenario Norte"
+              required
+            />
+
+            <Input
+              label="Área"
+              name="area"
+              value={data.area}
+              onChange={(e) => onChange({ ...data, area: e.target.value })}
+              placeholder="Zona principal"
+              required
+            />
+
+            <Input
+              label="Capacidad"
+              name="capacity"
+              type="number"
+              min="0"
+              value={data.capacity}
+              onChange={(e) => onChange({ ...data, capacity: Number(e.target.value || 0) })}
+              placeholder="10000"
+              required
+            />
+
+            <Input
+              label="Foto (URL)"
+              name="image"
+              type="url"
+              value={data.image || ''}
+              onChange={(e) => onChange({ ...data, image: e.target.value })}
+              placeholder="https://..."
+              className="md:col-span-2"
+            />
+
+            <div className="w-full space-y-1 md:col-span-2">
+              <label className="block text-xs font-montserrat text-subsonic-muted uppercase tracking-widest ml-1">
+                Estado
+              </label>
+              <select
+                name="status"
+                value={data.status}
+                onChange={(e) => onChange({ ...data, status: e.target.value })}
+                className="w-full rounded-md border border-subsonic-border bg-subsonic-surface px-4 py-3 text-sm text-subsonic-text outline-none focus:ring-2 focus:ring-subsonic-accent/30"
+              >
+                <option value="Operativo">Operativo</option>
+                <option value="En montaje">En montaje</option>
+                <option value="Solo staff">Solo staff</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-subsonic-border bg-subsonic-surface/40 p-4">
+            <p className="text-xs uppercase tracking-wider text-subsonic-muted mb-2">Vista previa de foto</p>
+            <div className="h-36 w-full overflow-hidden rounded-md border border-subsonic-border bg-subsonic-border">
+              <img
+                src={data.image || DEFAULT_GROUND_IMAGE}
+                alt={data.name || 'Recinto'}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = DEFAULT_GROUND_IMAGE;
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-subsonic-border bg-subsonic-surface/40 p-4">
+            <p className="text-sm text-subsonic-muted">
+              Configura capacidad y estado para que el equipo de ventas y logística tenga datos actualizados.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-3 border-t border-subsonic-border pt-4">
+            <Button
+              type="button"
+              onClick={onClose}
+              className="bg-subsonic-accent px-5 py-2 text-subsonic-bg"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              className="bg-subsonic-accent px-5 py-2 text-subsonic-bg"
+            >
+              Guardar
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const GroundsManagement = () => {
   const [grounds, setGrounds] = useState([]);
-
-  const [newName, setNewName] = useState('');
-  const [newArea, setNewArea] = useState('');
-  const [deleteMode, setDeleteMode] = useState(false);
-  const [selectedGroundId, setSelectedGroundId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedGround, setSelectedGround] = useState(null);
+  const [groundToDelete, setGroundToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentGround, setCurrentGround] = useState(emptyGround);
   const [canSubmit, setCanSubmit] = useState(true);
 
+  const fetchGrounds = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/grounds`);
+      if (!response.ok) {
+        throw new Error('Error al cargar recintos');
+      }
+      const data = await response.json();
+      setGrounds(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching grounds:', error);
+      setGrounds([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchGrounds = async () => {
-      if (typeof window !== 'undefined') {
-        const stored = window.localStorage.getItem('grounds');
-        if (stored) {
-          try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              setGrounds(parsed);
-              return;
-            }
-          } catch {
-            // ignore JSON errors and fall back to server
-          }
-        }
-      }
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/grounds`);
-        if (!response.ok) throw new Error('Error al cargar recintos');
-        const data = await response.json();
-        setGrounds(data || []);
-      } catch (error) {
-        console.error('Error fetching grounds:', error);
-        setGrounds([]);
-      }
-    };
-
     fetchGrounds();
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('grounds', JSON.stringify(grounds));
-    }
-  }, [grounds]);
+  const filteredGrounds = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
 
-  const totalCapacity = grounds.reduce((sum, g) => sum + g.capacity, 0);
-  const inSetupCount = grounds.filter((g) => g.status === 'En montaje').length;
-  const restrictedCount = grounds.filter((g) => g.status === 'Solo staff').length;
+    if (!term) return grounds;
 
-  const handleAddGround = (event) => {
-    event.preventDefault();
-    if (!canSubmit) {
-      alert('Por favor, espera antes de hacer más peticiones.');
-      return;
-    }
-    setCanSubmit(false);
-    const trimmedName = newName.trim();
-    const trimmedArea = newArea.trim();
-
-    if (!trimmedName) return;
-
-    const nextId = grounds.length > 0
-      ? Math.max(...grounds.map((g) => Number(g.id) || 0)) + 1
-      : 1;
-
-    const nextGround = {
-      id: nextId,
-      name: trimmedName,
-      area: trimmedArea || 'Zona sin asignar',
-      status: 'Operativo',
-      capacity: 0,
-    };
-
-    setGrounds((prev) => [...prev, nextGround]);
-    setNewName('');
-    setNewArea('');
-    setCanSubmit(true);
-  };
-
-  const handleDeleteGround = (id) => {
-    if (!canSubmit) {
-      alert('Por favor, espera antes de hacer más peticiones.');
-      return;
-    }
-    setCanSubmit(false);
-    const ground = grounds.find((g) => g.id === id);
-    const name = ground?.name || 'este recinto';
-
-    if (typeof window !== 'undefined') {
-      const confirmed = window.confirm(
-        `¿Seguro que quieres eliminar el recinto "${name}"?`
-      );
-      if (!confirmed) return;
-    }
-
-    setGrounds((prev) => prev.filter((g) => g.id !== id));
-    setSelectedGroundId((current) => (current === id ? null : current));
-    setCanSubmit(true);
-  };
-
-  const handleCycleStatus = (id) => {
-    const order = ['Operativo', 'En montaje', 'Solo staff'];
-
-    setGrounds((prev) =>
-      prev.map((g) => {
-        if (g.id !== id) return g;
-        const currentIndex = order.indexOf(g.status);
-        const nextStatus = order[(currentIndex + 1 + order.length) % order.length];
-        return { ...g, status: nextStatus };
-      })
+    return grounds.filter((ground) =>
+      [ground.id, ground.name, ground.area, ground.status, ground.capacity, ground.image]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(term))
     );
+  }, [grounds, searchTerm]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedGround(null);
+    setCurrentGround(emptyGround);
   };
 
-  const selectedGround =
-    selectedGroundId != null
-      ? grounds.find((g) => g.id === selectedGroundId)
-      : null;
+  const handleNewGround = () => {
+    setSelectedGround(null);
+    setCurrentGround(emptyGround);
+    setModalOpen(true);
+  };
+
+  const handleEditGround = (ground) => {
+    setSelectedGround(ground);
+    setCurrentGround({
+      ...emptyGround,
+      ...ground,
+      capacity: Number(ground?.capacity ?? 0),
+      status: ground?.status || 'Operativo',
+      image: ground?.image || '',
+    });
+    setModalOpen(true);
+  };
+
+  const handleSaveGround = async (e) => {
+    e.preventDefault();
+
+    if (!canSubmit) {
+      alert('Por favor, espera antes de hacer más peticiones.');
+      return;
+    }
+
+    setCanSubmit(false);
+
+    try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        throw new Error('No user is currently logged in or user is not authenticated.');
+      }
+
+      const token = await currentUser.getIdToken();
+      const isNew = !selectedGround?.id;
+      const groundId = String(selectedGround?.id || '').trim();
+
+      if (!isNew && !groundId) {
+        alert('No se pudo identificar el recinto a actualizar.');
+        return;
+      }
+
+      const payload = {
+        name: String(currentGround.name || '').trim(),
+        area: String(currentGround.area || '').trim(),
+        capacity: Number(currentGround.capacity || 0),
+        status: String(currentGround.status || 'Operativo'),
+        image: String(currentGround.image || '').trim(),
+      };
+
+      if (!isNew) {
+        payload.id = groundId;
+      }
+
+      const method = isNew ? 'POST' : 'PUT';
+      const url = isNew
+        ? `${API_BASE_URL}/grounds`
+        : `${API_BASE_URL}/grounds/${groundId}`;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} ${errorText}`);
+      }
+
+      closeModal();
+      await fetchGrounds();
+    } catch (error) {
+      console.error('Error saving ground:', error);
+    } finally {
+      setCanSubmit(true);
+    }
+  };
+
+  const handleDeleteGround = async (ground) => {
+    if (!canSubmit) {
+      alert('Por favor, espera antes de hacer más peticiones.');
+      return;
+    }
+
+    if (!ground?.id) return;
+
+    setCanSubmit(false);
+
+    try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        throw new Error('No user is currently logged in or user is not authenticated.');
+      }
+
+      const token = await currentUser.getIdToken();
+
+      const response = await fetch(`${API_BASE_URL}/grounds/${ground.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} ${errorText}`);
+      }
+
+      setGroundToDelete(null);
+      await fetchGrounds();
+    } catch (error) {
+      console.error('Error deleting ground:', error);
+    } finally {
+      setCanSubmit(true);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center p-8">Cargando recintos...</div>;
+  }
 
   return (
-    <main className="min-h-screen bg-subsonic-bg pt-24 pb-12 px-6 text-subsonic-text">
-      <div className="max-w-7xl mx-auto flex flex-col gap-10">
-        <PageHeader title="Gestión de recintos" />
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-black text-subsonic-accent uppercase tracking-tight">
+          Gestión de Recintos
+        </h1>
+        <Button
+          onClick={handleNewGround}
+          className="border border-subsonic-border text-subsonic-bg font-black px-5 py-2 rounded-full uppercase text-sm hover:border-subsonic-bg transition"
+        >
+          + Nuevo Recinto
+        </Button>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-10">
-          <section className="flex-1 flex flex-col gap-6">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-black text-subsonic-accent uppercase tracking-tight">
-                  Recintos y espacios
-                </h2>
-              </div>
+      <div className="mb-6 max-w-md">
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder="Buscar por nombre, id, área, estado o capacidad..."
+          showButton={false}
+          className="w-full"
+          inputClassName="w-full rounded-md border border-subsonic-border bg-subsonic-surface px-4 py-2 text-sm text-subsonic-text placeholder:text-subsonic-muted outline-none focus:ring-2 focus:ring-subsonic-accent/30"
+        />
+      </div>
 
-              <div className="flex items-center gap-2 w-full md:w-64">
-                <Input
-                  placeholder="Búsqueda"
-                  className="w-full"
-                />
-                <img
-                  src={SearchIcon}
-                  alt="Buscar"
-                  className="w-4 h-4 opacity-70"
-                  aria-hidden="true"
-                />
-              </div>
-            </div>
-
-            <form
-              onSubmit={handleAddGround}
-              className="mt-4 flex flex-col md:flex-row gap-3 items-stretch md:items-end"
-            >
-              <div className="flex-1">
-                <Input
-                  label="Nuevo recinto"
-                  placeholder="Nombre del recinto"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                />
-              </div>
-              <div className="flex-1">
-                <Input
-                  label="Zona"
-                  placeholder="Ej: Zona norte"
-                  value={newArea}
-                  onChange={(e) => setNewArea(e.target.value)}
-                />
-              </div>
-              <div className="flex gap-3 mt-2 md:mt-0">
-                <Button
-                  type="submit"
-                  variant="primarySmall"
-                  className="px-6 text-xs uppercase tracking-widest"
-                >
-                  Añadir recinto
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className={`px-4 text-[11px] uppercase tracking-widest border border-red-500 text-red-300 transition-colors rounded-full ${
-                    deleteMode ? 'bg-red-500/30' : 'bg-red-500/10'
-                  }`}
-                  onClick={() => setDeleteMode((prev) => !prev)}
-                >
-                  {deleteMode ? 'Salir modo borrar' : 'Modo borrar recintos'}
-                </Button>
-              </div>
-            </form>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {grounds.map((ground) => (
-                <div
-                  key={ground.id}
-                  className="block h-full group text-left cursor-pointer"
-                  onClick={() => {
-                    if (deleteMode) {
-                      handleDeleteGround(ground.id);
-                    } else {
-                      setSelectedGroundId(ground.id);
-                    }
-                  }}
-                >
-                  <BaseCard className="relative items-stretch rounded-3xl bg-subsonic-navfooter/90">
-                    <div className="bg-subsonic-bg/80 rounded-2xl mb-4 w-full overflow-hidden aspect-4/3">
-                      <img
-                        src={groundImage}
-                        alt={ground.name}
-                        className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
-                      />
-                    </div>
-
-                    <div className="mb-3 text-left space-y-1">
-                      <p className="text-sm font-black uppercase tracking-tight text-subsonic-text">
-                        {ground.name}
-                      </p>
-                      <p className="text-[11px] text-subsonic-muted uppercase tracking-widest">
-                        {ground.area} · Aforo aprox. {ground.capacity.toLocaleString('es-ES')} personas
-                      </p>
-                    </div>
-
-                    <div className="mt-auto flex justify-center">
-                      <span className="inline-flex items-center justify-center px-6 py-1 rounded-full bg-subsonic-accent text-black text-xs font-black uppercase tracking-widest">
+      <div className="bg-subsonic-navfooter border border-subsonic-border rounded-2xl overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <table className="min-w-225 w-full divide-y divide-subsonic-border">
+            <thead className="bg-subsonic-surface/50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Nombre</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Área</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Capacidad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Estado</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Foto</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-subsonic-muted uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-subsonic-border">
+              {filteredGrounds.length > 0 ? (
+                filteredGrounds.map((ground) => (
+                  <tr key={ground.id} className="hover:bg-subsonic-surface/20 transition">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{ground.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{ground.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">{ground.area}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-subsonic-text">
+                      {Number(ground.capacity || 0).toLocaleString('es-ES')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyles[ground.status] || 'bg-subsonic-border text-subsonic-muted'}`}>
                         {ground.status}
                       </span>
-                    </div>
-                  </BaseCard>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-6">
-            <div className="h-full">
-              <BaseCard className="h-full items-stretch rounded-3xl">
-                <h3 className="text-xl font-black text-subsonic-text mb-4 uppercase tracking-tight">
-                  Información
-                </h3>
-                <div className="flex-1 space-y-3 text-xs text-subsonic-muted leading-snug">
-                  <p className="uppercase tracking-widest font-black text-[10px] text-subsonic-accent">
-                    Resumen operativo
-                  </p>
-                  <p>
-                    Recintos totales configurados:{' '}
-                    <span className="font-bold text-subsonic-text">{grounds.length}</span>
-                  </p>
-                  <p>
-                    Capacidad agregada estimada:{' '}
-                    <span className="font-bold text-subsonic-text">
-                      {totalCapacity.toLocaleString('es-ES')} personas
-                    </span>
-                  </p>
-                  <p>
-                    Última actualización del plano: <span className="font-semibold">hoy, 10:32h</span>
-                  </p>
-                  <p>
-                    Recintos en montaje:{' '}
-                    <span className="font-semibold">{inSetupCount}</span> · Zonas restringidas:{' '}
-                    <span className="font-semibold">{restrictedCount}</span>
-                  </p>
-                  <p>
-                    Usa esta vista para validar aforos, accesos y posibles cuellos de botella
-                    antes de abrir puertas.
-                  </p>
-                </div>
-              </BaseCard>
-            </div>
-
-            <div className="flex justify-center">
-              <Button
-                variant="primary"
-                className="px-8 py-3 text-xs uppercase tracking-widest rounded-full"
-              >
-                Acceder a ventas
-              </Button>
-            </div>
-          </aside>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ground.image ? 'bg-green-500/20 text-green-300' : 'bg-subsonic-border text-subsonic-muted'}`}>
+                        {ground.image ? 'Sí' : 'No'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                      <Button
+                        onClick={() => handleEditGround(ground)}
+                        className="bg-subsonic-border text-subsonic-accent hover:text-opacity-80 hover:bg-subsonic-accent hover:text-subsonic-bg px-6 py-2"
+                        variant=""
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        onClick={() => setGroundToDelete(ground)}
+                        className="bg-subsonic-border text-red-400 hover:bg-red-500 hover:text-subsonic-bg px-6 py-2"
+                        variant=""
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="px-6 py-10 text-center text-sm text-subsonic-muted">
+                    No se encontraron recintos con ese filtro.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {selectedGround && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-40"
-          onClick={() => setSelectedGroundId(null)}
-        >
-          <div
-            className="w-full max-w-xl max-h-[80vh]"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <BaseCard className="bg-subsonic-navfooter/90 rounded-3xl overflow-hidden p-0 flex flex-col">
-              <div className="w-full h-40 md:h-56 overflow-hidden">
-                <img
-                  src={groundImage}
-                  alt={selectedGround.name}
-                  className="w-full h-full object-cover opacity-80"
-                />
-              </div>
+      <GroundFormModal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onSave={handleSaveGround}
+        data={currentGround}
+        onChange={setCurrentGround}
+        isEditing={!!selectedGround}
+      />
 
-              <div className="p-6 space-y-4 overflow-y-auto">
-                <div>
-                  <p className="text-subsonic-accent text-xs font-bold uppercase tracking-widest mb-1">
-                    {selectedGround.area}
-                  </p>
-                  <h1 className="text-2xl font-black uppercase tracking-tight mb-1">
-                    {selectedGround.name}
-                  </h1>
-                  <p className="text-xs text-subsonic-muted uppercase tracking-widest">
-                    Aforo estimado {selectedGround.capacity.toLocaleString('es-ES')} personas
-                  </p>
-                </div>
-
-                <div className="text-sm text-subsonic-text/80 space-y-1">
-                  <p>
-                    Estado actual:{' '}
-                    <span className="font-black text-subsonic-accent uppercase">
-                      {selectedGround.status}
-                    </span>
-                  </p>
-                  <p>
-                    Usa esta ficha para revisar y actualizar rápidamente la información de este
-                    recinto antes y durante el festival.
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-subsonic-border flex flex-wrap gap-3 justify-between">
-                  <Button
-                    type="button"
-                    variant="primarySmall"
-                    className="text-xs"
-                    onClick={() => handleCycleStatus(selectedGround.id)}
-                  >
-                    Cambiar estado ({selectedGround.status})
-                  </Button>
-                  <div className="flex gap-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="text-xs"
-                      onClick={() => setSelectedGroundId(null)}
-                    >
-                      Cerrar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="text-xs border border-red-500 bg-red-500 text-white hover:bg-red-600 rounded-full px-4 py-2"
-                      onClick={() => handleDeleteGround(selectedGround.id)}
-                    >
-                      Eliminar recinto
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </BaseCard>
-          </div>
-        </div>
-      )}
-    </main>
+      <ConfirmDialog
+        isOpen={!!groundToDelete}
+        onClose={() => setGroundToDelete(null)}
+        onConfirm={handleDeleteGround}
+        title="Eliminar recinto"
+        message={`¿Estás seguro de que deseas eliminar "${groundToDelete?.name}"? Esta acción no se puede deshacer.`}
+        user={groundToDelete}
+      />
+    </div>
   );
 };
 
