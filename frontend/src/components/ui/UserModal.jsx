@@ -66,6 +66,14 @@ const UserModal = ({isOpen, onClose, onSave, user}) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-subsonic-surface border border-subsonic-border p-8 rounded-lg w-full max-w-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="absolute right-4 top-4 text-lg text-subsonic-muted hover:text-subsonic-text"
+                    aria-label="Cerrar modal"
+                >
+                    ✕
+                </button>
                 <h2 className="text-2xl font-bold text-subsonic-accent mb-6">
                     {user ? 'Editar Usuario' : 'Nuevo Usuario'}
                 </h2>
@@ -192,13 +200,6 @@ const UserModal = ({isOpen, onClose, onSave, user}) => {
                     </div>
 
                     <div className="flex justify-end space-x-3 pt-4">
-                        <Button
-                            type="button"
-                            onClick={onClose}
-                            className="border border-subsonic-border text-subsonic-bg font-black px-5 py-2 rounded-full uppercase text-sm hover:border-subsonic-accent transition"
-                        >
-                            Cancelar
-                        </Button>
                         <Button
                             type="submit"
                             className="border border-subsonic-border text-subsonic-bg font-black px-5 py-2 rounded-full uppercase text-sm hover:border-subsonic-accent transition"
