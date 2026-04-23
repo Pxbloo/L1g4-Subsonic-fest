@@ -122,17 +122,10 @@ const GroundFormModal = ({ isOpen, onClose, onSave, data, onChange, isEditing })
 
           <div className="flex justify-end gap-3 border-t border-subsonic-border pt-4">
             <Button
-              type="button"
-              onClick={onClose}
-              className="bg-subsonic-accent px-5 py-2 text-subsonic-bg"
-            >
-              Cancelar
-            </Button>
-            <Button
               type="submit"
               className="bg-subsonic-accent px-5 py-2 text-subsonic-bg"
             >
-              Guardar
+              {isEditing ? 'Actualizar' : 'Crear'}
             </Button>
           </div>
         </form>

@@ -6,17 +6,18 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, user }) => 
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-subsonic-surface border border-subsonic-border p-6 rounded-lg w-full max-w-md shadow-2xl">
+            <div className="relative bg-subsonic-surface border border-subsonic-border p-6 rounded-lg w-full max-w-md shadow-2xl">
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="absolute right-4 top-4 text-lg text-subsonic-muted hover:text-subsonic-text"
+                    aria-label="Cerrar modal"
+                >
+                    ✕
+                </button>
                 <h3 className="text-xl font-bold text-subsonic-text mb-2">{title}</h3>
                 <p className="text-subsonic-text/80 mb-6">{message}</p>
-                <div className="flex justify-end space-x-3">
-                    <Button
-                        onClick={onClose}
-                        className="px-4 py-2 border border-subsonic-border text-subsonic-muted hover:text-subsonic-text transition"
-                        variant=''
-                    >
-                        Cancelar
-                    </Button>
+                <div className="flex justify-end">
                     <Button
                         onClick={() => {
                             onConfirm(user);
