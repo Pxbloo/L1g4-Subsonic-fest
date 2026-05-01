@@ -154,6 +154,10 @@ const FestivalInstance = () => {
     );
   }
 
+  const endDate = new Date(festival.endDate);
+  console.log('EndDate: ', endDate);
+  const isOver = new Date(festival.endDate) < new Date();
+
   return (
     <div className="min-h-screen bg-subsonic-bg text-subsonic-text font-inter">
       <header className="relative h-[50vh] flex items-end p-10 bg-subsonic-navfooter border-b border-subsonic-border">
@@ -189,13 +193,24 @@ const FestivalInstance = () => {
                 </div>
               ))}
             </div>
-            <Button 
-              variant="primary" 
-              className="w-full py-4 text-base" 
-              onClick={() => setIsTicketModalOpen(true)}
-            >
-              Comprar Tickets
-            </Button>
+              {isOver ? (
+                  <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-4 text-center">
+                      <p className="text-sm font-bold uppercase text-red-400">
+                          Este festival ya ha finalizado
+                      </p>
+                      <p className="mt-2 text-xs text-subsonic-muted">
+                          La compra de entradas no está disponible.
+                      </p>
+                  </div>
+              ) : (
+                  <Button
+                      variant="primary"
+                      className="w-full py-4 text-base"
+                      onClick={() => setIsTicketModalOpen(true)}
+                  >
+                      Comprar Tickets
+                  </Button>
+              )}
             <div className="mt-8 pt-8 border-t border-subsonic-border text-center">
               <p className="text-[10px] text-subsonic-muted uppercase font-bold mb-4 tracking-widest">Compartir evento</p>
               <div className="flex justify-center">
